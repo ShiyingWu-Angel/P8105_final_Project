@@ -1,0 +1,17 @@
+Proposal
+================
+
+# Title???
+
+### Member:
+
+Yutong Chen,  
+Tingcheng Pan,  
+Shiying Wu (sw3455)  
+Yifan Xu (yx2857)
+
+- The motivation for this project
+- The intended final products
+- The anticipated data sources
+- The planned analyses / visualizations / coding challenges
+- The planned timeline
