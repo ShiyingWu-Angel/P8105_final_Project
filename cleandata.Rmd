@@ -85,4 +85,10 @@ filterPA<-
 
 write.csv(filterPA, "filterPA.csv", row.names = FALSE)
 
+filterPA |>
+  separate_rows(categories, sep = ",\\s*")|>
+  group_by(categories) |>
+  summarize(count = n()) |>
+  arrange(desc(count))
+
 ```
