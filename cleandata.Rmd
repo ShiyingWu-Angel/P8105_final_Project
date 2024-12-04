@@ -121,10 +121,10 @@ filterPA <- filterPA |>
     )
   )
 
-save(filterPA, file = "filterPA.RData")
+save(filterPA, file = "data/filterPA.RData")
 ```
 ```{r merge data}
-PACounty<- read_csv("PA-city-county.csv")
+PACounty <- read_csv("data/PA-city-county.csv")
 mergedPA <- filterPA |>
   left_join(PACounty, by = "city")
 mergedPA <- mergedPA %>%
@@ -138,6 +138,6 @@ mergedPA <- mergedPA %>%
     )
   )
 
-save(mergedPA, file = "mergedPA.RData")
+save(mergedPA, file = "data/mergedPA.RData")
 
 ```
