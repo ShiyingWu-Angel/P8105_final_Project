@@ -8,7 +8,7 @@ output: html_document
 ```{r setup, include=FALSE}
 library(dplyr)
 library(stringr)
-
+library(tidyverse)
 ```
 ```{r data cleaning, include=FALSE}
 NY<-data|>
@@ -90,5 +90,4 @@ filterPA |>
   group_by(categories) |>
   summarize(count = n()) |>
   arrange(desc(count))
-
 ```
