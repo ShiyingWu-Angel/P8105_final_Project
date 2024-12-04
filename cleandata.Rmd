@@ -82,12 +82,12 @@ filterPA<-
   summarize(categories = paste(unique(categories), collapse = ", ")) |> 
   ungroup()
 
-
-write.csv(filterPA, "filterPA.csv", row.names = FALSE)
+save(filterPA, file = "filterPA.RData")
 
 filterPA |>
   separate_rows(categories, sep = ",\\s*")|>
   group_by(categories) |>
   summarize(count = n()) |>
   arrange(desc(count))
+
 ```
