@@ -1,0 +1,104 @@
+---
+title: "Shiny"
+author: "Shiying Wu"
+date: "2024-12-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(dplyr)
+library(cluster)
+library(plotly)
+load("data/mergedPA.RData")
+```
+
+
+```{r plot number of restaurant in county}
+county_counts <- mergedPA |>
+  group_by(county) |>
+  summarise(count = n(), .groups = "drop") |>
+  mutate(county = fct_reorder(county, count)) 
+
+plot_ly(
+  data = county_counts,
+  x = ~county,
+  y = ~count,
+  color = ~county,
+  type = "bar",
+  colors = "viridis"
+) |> 
+  layout(
+    title = "Number of Entries by County",
+    xaxis = list(title = "County", showticklabels = TRUE),
+    yaxis = list(title = "Count"),
+    showlegend = FALSE
+  )
+```
+```{r plot average star}
+avg_stars <- mergedPA |>
+  group_by(county) |>
+  summarise(avg_stars = mean(stars, na.rm = TRUE), .groups = "drop") |>
+  arrange(desc(avg_stars)) |> 
+  mutate(county = fct_reorder(county, avg_stars))
+
+plot_ly(
+  data = avg_stars,
+  x = ~county,
+  y = ~avg_stars,
+  color = ~county,
+  type = "bar",
+  colors = "viridis"
+) |> 
+  layout(
+    title = "Average Ratings by County",
+    xaxis = list(title = "County", showticklabels = TRUE),
+    yaxis = list(title = "Average Stars", range = c(3, 4)),
+    showlegend = FALSE
+  )
+```
+```{r scatter plot}
+
+scatter_plot <- plot_ly(
+  data = mergedPA,
+  y = ~review_count,
+  x = ~stars,
+  color = ~county,
+  type = "scatter",
+  mode = "markers",
+  colors = "viridis",
+  marker = list(opacity = 0.5)
+) 
+
+scatter_plot
+```
+```{r scatter plot}
+restaurant_types <- mergedPA |>
+  separate_rows(categories, sep = ",\\s*") |>  
+  group_by(county, categories) |>  
+  summarise(count = n(), .groups = "drop") |>  
+  arrange(desc(count)) |>  
+  group_by(county) |> 
+  slice_max(count, n = 5) |>  
+  ungroup()
+
+# Plot the data
+histogram_plot <- plot_ly(
+  data = restaurant_types,
+  x = ~categories,  
+  y = ~count,   
+  color = ~county, 
+  type = "bar", 
+  colors = "viridis"
+) |> 
+  layout(
+    title = "Most Popular Restaurant Tags by County",
+    xaxis = list(title = "Restaurant Tag", tickangle = 45), 
+    yaxis = list(title = "Count"),
+    barmode = "stack"  
+  )
+
+histogram_plot
+```
+```
+
