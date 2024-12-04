@@ -121,18 +121,22 @@ filterPA <- filterPA |>
   )
 
 save(filterPA, file = "filterPA.RData")
+```
+```{r merge data}
 PACounty<- read_csv("PA-city-county.csv")
 mergedPA <- filterPA |>
   left_join(PACounty, by = "city")
 mergedPA <- mergedPA %>%
   mutate(
-    county = ifelse(city == "telford", "Montgomery", county),
-    county = ifelse(city == "philadelphia", "Philadelphia", county),
-    county = ifelse(city == "lansdale", "Montgomery", county),
-    county = ifelse(city == "royersford", "Montgomery", county)
+    county = case_when(
+      postal_code == 18969 ~ "Montgomery",
+      postal_code == 19123 ~ "Philadelphia",
+      postal_code == 19446 ~ "Montgomery",
+      postal_code == 19473 ~ "Montgomery",
+      TRUE ~ county 
+    )
   )
-mergedPA|>
-  filter(is.na(county))
+
 save(mergedPA, file = "mergedPA.RData")
 
 ```
