@@ -115,6 +115,7 @@ filterPA <- filterPA |>
       city == "concordville" ~ "concord township",
       city == "ridley park" ~ "ridley",
       city == "warrington township" ~ "warrington",
+      city == "pennsylvania" ~ "philadelphia",
       TRUE ~ city  
     )
   )
@@ -123,6 +124,15 @@ save(filterPA, file = "filterPA.RData")
 PACounty<- read_csv("PA-city-county.csv")
 mergedPA <- filterPA |>
   left_join(PACounty, by = "city")
+mergedPA <- mergedPA %>%
+  mutate(
+    county = ifelse(city == "telford", "Montgomery", county),
+    county = ifelse(city == "philadelphia", "Philadelphia", county),
+    county = ifelse(city == "lansdale", "Montgomery", county),
+    county = ifelse(city == "royersford", "Montgomery", county)
+  )
+mergedPA|>
+  filter(is.na(county))
 save(mergedPA, file = "mergedPA.RData")
-  
+
 ```
