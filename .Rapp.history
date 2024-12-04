@@ -1,1 +1,2 @@
 load("/Users/angel/Desktop/P8105 Data Science1/P8105_final_Project/yelp.rdata")
+load("/Users/angel/Desktop/P8105 Data Science1/P8105_final_Project/filterPA.RData")

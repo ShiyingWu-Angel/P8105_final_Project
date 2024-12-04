@@ -9,6 +9,7 @@ output: html_document
 library(dplyr)
 library(stringr)
 library(tidyverse)
+library(httr)  
 ```
 ```{r data cleaning, include=FALSE}
 NY<-data|>
@@ -82,12 +83,46 @@ filterPA<-
   summarize(categories = paste(unique(categories), collapse = ", ")) |> 
   ungroup()
 
-save(filterPA, file = "filterPA.RData")
-
 filterPA |>
   separate_rows(categories, sep = ",\\s*")|>
   group_by(categories) |>
   summarize(count = n()) |>
   arrange(desc(count))
 
+filterPA$city <- tolower(filterPA$city)
+
+filterPA <- filterPA |>
+  mutate(
+    postal_code = ifelse(postal_code == 10426, 19426, postal_code),
+    city = case_when(
+      city == "bensalem. pa" ~ "bensalem",
+      city == "bensalem township" ~ "bensalem",
+      city == "glenoldan" ~ "glenolden",
+      city == "feasterville-trevose" ~ "feasterville trevose",
+      city == "feasterville" ~ "feasterville trevose",
+      city == "bristol twp" ~ "bristol",
+      city == "bethel township" ~ "bethel",
+      city == "phila" ~ "philadelphia",
+      city == "philadelphia" ~ "philadelphia",
+      city == "philly" ~ "philadelphia",
+      city == "fox street" ~ "philadelphia",
+      city == "west chester pa" ~ "west chester",
+      city == "w.chester" ~ "west chester",
+      city == "gwynedd valley" ~ "gwynedd",
+      city == "skippack village" ~ "skippack",
+      city == "abington township" ~ "abington",
+      city == "cheltenham township" ~ "cheltenham",
+      city == "concordville" ~ "concord township",
+      city == "ridley park" ~ "ridley",
+      city == "warrington township" ~ "warrington",
+      TRUE ~ city  
+    )
+  )
+
+save(filterPA, file = "filterPA.RData")
+PACounty<- read_csv("PA-city-county.csv")
+mergedPA <- filterPA |>
+  left_join(PACounty, by = "city")
+save(mergedPA, file = "mergedPA.RData")
+  
 ```
