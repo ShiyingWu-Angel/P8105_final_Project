@@ -29,7 +29,41 @@ PA<-
   clean|>
   filter(state == "PA") 
 unique(PA$city)
-category_summar<-
+
+
+categories_to_keep <- c(
+  "Afghan", "African", "American (New)", "American (Traditional)", 
+  "Andalusian", "Arabian", "Argentine", "Armenian", "Asian Fusion", "Asturian", 
+  "Australian", "Austrian", "Baguettes", "Bangladeshi", "Barbeque", "Basque", "Bavarian", 
+  "Beer Garden", "Beer Hall", "Beisl", "Belgian", "Bistros", "Black Sea", "Brasseries", 
+  "Brazilian", "Breakfast & Brunch", "British", "Buffets", 
+  "Bulgarian", "Burgers", "Burmese", "Cafes", "Cafeteria", "Cajun/Creole", 
+  "Cambodian", "Canadian (New)", "Canteen", "Caribbean", "Catalan", "Cheesesteaks", "Chicken Shop", "Chicken Wings", "Chilean", "Chinese", "Comfort Food", "Corsican", "Creperies", 
+  "Cuban", "Curry Sausage", "Cypriot", "Czech", "Czech/Slovakian", "Danish", "Delis", "Diners", 
+  "Dinner Theater", "Dumplings", "Eastern European", "Eritrean", "Ethiopian", "Fast Food", 
+  "Filipino", "Fischbroetchen", "Fish & Chips", "Flatbread", "Fondue", "Food Court", "Food Stands", 
+  "Freiduria", "French", "French Southwest", "Galician", "Game Meat", "Gastropubs", 
+  "Georgian", "German", "Giblets", "Gluten-Free", "Greek", "Guamanian", "Halal", "Hawaiian", 
+  "Heuriger", "Himalayan/Nepalese", "Honduran", "Hong Kong Style Cafe", "Hot Dogs", "Hot Pot", 
+  "Hungarian", "Iberian", "Indian", "Indonesian", "International", "Irish", "Island Pub", 
+  "Israeli", "Italian", "Japanese", "Jewish", "Kebab", "Kopitiam", "Korean", "Kosher", "Kurdish", "Laos", 
+  "Laotian", "Latin American", "Live/Raw Food", "Lyonnais", 
+  "Malaysian", "Meatballs", "Mediterranean",  "Mexican",
+  "Middle Eastern", "Milk Bars", "Modern Australian", "Modern European", 
+  "Mongolian", "Moroccan", "New Mexican Cuisine", "New Zealand", "Nicaraguan", "Night Food", 
+  "Nikkei", "Noodles", "Norcinerie", "Open Sandwiches", "Oriental", "Pakistani", "Pan Asian", 
+  "Parent Cafes", "Parma", "Persian/Iranian", "Peruvian", "PF/Comercial", "Pita", "Pizza", 
+  "Polish", "Polynesian", "Pop-Up Restaurants", "Portuguese", "Potatoes", 
+  "Poutineries", "Pub Food", "Rice", "Romanian", "Rotisserie Chicken", "Russian", "Salad", 
+  "Sandwiches", "Scandinavian", "Schnitzel", "Scottish", "Seafood", "Serbo Croatian", 
+  "Signature Cuisine", "Singaporean", "Slovakian", "Somali", "Soul Food", "Soup", "Southern", 
+  "Spanish", "Sri Lankan", "Steakhouses", "Supper Clubs", "Sushi Bars", 
+  "Swabian", "Swedish", "Swiss Food", "Syrian", "Tabernas", "Taiwanese", "Tapas Bars", 
+  "Tapas/Small Plates", "Tavola Calda", "Tex-Mex", "Thai", "Traditional Norwegian", 
+  "Traditional Swedish", "Trattorie", "Turkish", "Ukrainian", "Uzbek", "Vegan", "Vegetarian", 
+  "Venison", "Vietnamese", "Waffles", "Wok", "Wraps", "Yugoslav"
+)
+category_summary<-
   PA |>
   separate_rows(categories, sep = ",\\s*")|>
   group_by(categories) |>
@@ -38,6 +72,17 @@ category_summar<-
 
 print(category_summary)
 
-write.csv(PA, "PA.csv", row.names = FALSE)
+filterPA<-
+  PA|>
+  filter(is_open == 1)|>
+  separate_rows(categories, sep = ",\\s*")|>
+  filter(categories!="Food" & categories!="Restaurants")|>
+  filter(categories %in% categories_to_keep) |>
+  group_by(name, address, city, postal_code, latitude, longitude, stars, review_count, attributes, hours) |>  
+  summarize(categories = paste(unique(categories), collapse = ", ")) |> 
+  ungroup()
+
+
+write.csv(filterPA, "filterPA.csv", row.names = FALSE)
 
 ```
