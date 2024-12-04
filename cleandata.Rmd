@@ -11,7 +11,8 @@ library(stringr)
 library(tidyverse)
 library(httr)  
 ```
-```{r data cleaning, include=FALSE}
+```{r data cleaning}
+load("data/yelp.rdata")
 NY<-data|>
   filter(str_detect(city, regex("New York", ignore_case = TRUE)))
 
