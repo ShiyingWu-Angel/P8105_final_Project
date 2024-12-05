@@ -1,99 +1,52 @@
 ---
-title: "Fantastic eats and where to find them"
+title: "Fantastic Eats and Where to Find Them: PA Version"
 output: 
   html_document:
-    code_folding: hide
-    always_allow_html: true
     toc: true
     toc_float: true
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 library(tidyverse)
 library(ggplot2)
 library(plotly)
 ```
 
 ```{r, include = FALSE}
-PA = 
-  read_csv("data/clean_squirrel_2018.csv")
+load("data/mergedPA.RData")
 ```
 
 ---
 
-### Welcome
+![](picture/yelp-top-100-us-restaurants.jpeg)
+Photo from:  https://www.yelp.com/article/top-100-us-restaurants-2024/ 
 
-```{r, echo=FALSE, out.width="60%", fig.align = 'center'}
-knitr::include_graphics("./pictures/park_squirrel_fence.jpeg")
-```
-<center style="font-size: 10px;"> Photo from:  https://www.centralparknyc.org/ </center>
-     
-<br><br>                                       
+## Motivation
 
-Squirrels are familiar neighbors to all New Yorkers. Central Park provides over 800 acres of prime habitat for approximately 2,300 squirrels. (That's roughly 2.74 squirrels per acre!)^1^
-
-Our team hopes to close the divide between squirrels and New Yorkers by creating fun and engaging visual descriptions of Manhattan's fuzziest population. Explore our website to learn more about Central Park's squirrels using observational data from the 2018 Squirrel Census^2^. 
-
-
-<br><br>
-
+It is hard for anyone to find a good restaurant, no matter if they stay in the same place for a long time or just move in like us. When people do not know where to eat, rating apps such as yelp would be a key resource for people to use. However, it led to an interesting question to us: what factors could correlate with rates or stars. 
 
 ---
 
-### Screen cast 
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/VjzZO-V2kSc?si=HXyaTLDcqwdGPMLV" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+## Project Overview
+<iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+        title="YouTube video player" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+        allowfullscreen>
+</iframe>
 
 ---
 
 
-### Meet the squirrels!
+### Looking for some fantastic food?
+### Looking for fancy places to eat for date?
+### Looking for a match for special needs?
 
-Hover over each point on the map to learn more about the name, age, and fur color of the squirrel spotted at that location!
-```{r, fig.width= 8, fig.align='right'}
-geo_coord = squirrel_census |> 
-  mutate(
-    activity = case_when(
-      running == "TRUE" ~ "running",
-      chasing == "TRUE" ~ "chasing",
-      climbing == "TRUE" ~ "climbing",
-      foraging == "TRUE" ~ "foraging",
-      is.na(other_activities) ~ "sedentary") 
-  ) |> select(x, y, name, age, combination_of_primary_and_highlight_color, primary_fur_color, activity)
-
-map_squirrels = 
-  geo_coord |> 
-  mutate(squirrel_deets = str_c(name, age, combination_of_primary_and_highlight_color, activity, sep = "<br />")) |>
-  plot_ly(
-    lat = ~y,
-    lon = ~x,
-    color = ~primary_fur_color,
-    colors = "Set2",
-    marker = list(color = "Dark"),
-    type = 'scattermapbox',
-    hovertext = ~squirrel_deets,
-    mode   = 'markers', 
-    alpha = 0.7)
-
-map_squirrels = 
-  map_squirrels |> 
-  layout(
-    mapbox = list(
-      style = 'carto-positron',
-      zoom = 12.75,
-      center = list(lon = -73.96473, lat = 40.78396))) 
-
-map_squirrels 
-```
-
-
-
+![](picture/looking.png)
 
 
 ---
 
 
-For more informartion about New York's Squirrels, check out these references: 
-
-1. https://www.centralparknyc.org/articles/getting-to-know-central-parks-squirrels
-2. https://www.thesquirrelcensus.com/data
+For more informartion about yelp.data and some nice restaurant, check out https://www.yelp.com/dataset

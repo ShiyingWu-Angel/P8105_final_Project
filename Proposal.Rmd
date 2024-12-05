@@ -1,6 +1,6 @@
 ---
 title: "Proposal"
-output: github_document
+output: html_document
 ---
 # The tentative project title:
 ## Fantastic eats and where to find them

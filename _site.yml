@@ -1,0 +1,12 @@
+name: "Yay internet!"
+output_dir: "."
+navbar:
+  title: "Home"
+  right:
+    - text: "About"
+      href: Proposal.html
+    - icon: fa-github fa-lg
+      href: https://github.com/ShiyingWu-Angel/P8105_final_Project
+output:
+  html_document:
+   theme: cerulean
