@@ -11,6 +11,8 @@ library(dplyr)
 library(cluster)
 library(plotly)
 load("data/mergedPA.RData")
+library(ggplot2)
+library(sf) 
 ```
 
 
@@ -72,7 +74,7 @@ scatter_plot <- plot_ly(
 
 scatter_plot
 ```
-```{r scatter plot}
+```{r popular histogram plot}
 restaurant_types <- mergedPA |>
   separate_rows(categories, sep = ",\\s*") |>  
   group_by(county, categories) |>  
@@ -82,7 +84,6 @@ restaurant_types <- mergedPA |>
   slice_max(count, n = 5) |>  
   ungroup()
 
-# Plot the data
 histogram_plot <- plot_ly(
   data = restaurant_types,
   x = ~categories,  
@@ -100,5 +101,66 @@ histogram_plot <- plot_ly(
 
 histogram_plot
 ```
+```{r popular histogram plot}
+stacked_data <- mergedPA |>
+  separate_rows(categories, sep = ",\\s*") |> 
+  group_by(categories, county) |>
+  summarise(count = n(), .groups = "drop") |>  
+  ungroup()
+
+top_tags <- stacked_data |>
+  group_by(categories) |>
+  summarise(total_count = sum(count), .groups = "drop") |>
+  arrange(desc(total_count)) |>
+  slice_max(total_count, n = 10) |>
+  pull(categories) 
+
+stacked_data <- stacked_data |>
+  filter(categories %in% top_tags) |>
+  mutate(categories = factor(categories, levels = top_tags))
+  
+
+plot_ly(
+  data = stacked_data,
+  x = ~categories,       
+  y = ~count,         
+  color = ~county,   
+  type = "bar",       
+  colors = "viridis"
+) |> 
+  layout(
+    title = "Top 10 Restaurant Tags by County",
+    xaxis = list(title = "Restaurant Tag", tickangle = 45), 
+    yaxis = list(title = "Count"),
+    barmode = "stack"
+  )
+
+```
+
+```{r cars, fig.width = 8, fig.asp = 0.6}
+pa_map <- st_read(here::here("PAMAP", "tl_rd22_42_place.shp"), quiet = TRUE)
+
+long_limits <- c(-76, -74.5)  
+lat_limits <- c(39.7, 40.5)  
+
+ggplot() +
+  geom_sf(data = pa_map, color = "grey", fill = "lightgrey") +  # Base map
+  geom_point(
+    data = mergedPA,
+    aes(x = longitude, y = latitude, color = stars),  # Restaurant points
+    size = 0.5, alpha = 0.5
+  ) +
+  coord_sf(xlim = long_limits, ylim = lat_limits, expand = FALSE) +  # Zoom to SE PA
+  theme_void(base_size = 15) +  # Minimalist theme
+  theme(legend.position = "bottom") +  # Position legend at the bottom
+  guides(color = guide_legend(
+    title.position = "top",
+    override.aes = list(size = 3)
+  )) +
+  scale_color_gradient(low = "blue", high = "red") +  # Color gradient for ratings
+  labs(
+    title = "Restaurant Ratings in Southeastern Pennsylvania",
+    color = "Stars"
+  )
 ```
 

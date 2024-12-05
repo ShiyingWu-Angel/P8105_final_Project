@@ -1,5 +1,5 @@
 ---
-title: "Fantastic Eats and Where to Find Them: PA Version"
+title: "Fantastic Eats and Where to Find Them:  Southeastern PA Version"
 output: 
   html_document:
     toc: true
@@ -25,6 +25,7 @@ Photo from:  https://www.yelp.com/article/top-100-us-restaurants-2024/
 
 It is hard for anyone to find a good restaurant, no matter if they stay in the same place for a long time or just move in like us. When people do not know where to eat, rating apps such as yelp would be a key resource for people to use. However, it led to an interesting question to us: what factors could correlate with rates or stars. 
 
+Also my best friend 
 ---
 
 ## Project Overview
