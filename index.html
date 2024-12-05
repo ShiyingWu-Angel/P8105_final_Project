@@ -33,6 +33,7 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
@@ -221,6 +222,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -327,6 +331,9 @@ div.tocify {
   <a href="Proposal.html">About</a>
 </li>
 <li>
+  <a href="Regional.html">Regional Analyze</a>
+</li>
+<li>
   <a href="https://github.com/ShiyingWu-Angel/P8105_final_Project">
     <span class="fa fa-github fa-lg"></span>
      
@@ -338,6 +345,14 @@ div.tocify {
 </div><!--/.navbar -->
 
 <div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
 
@@ -351,22 +366,53 @@ Southeastern PA Version</h1>
 <p><img src="picture/yelp-top-100-us-restaurants.jpeg" /> Photo from: <a
 href="https://www.yelp.com/article/top-100-us-restaurants-2024/"
 class="uri">https://www.yelp.com/article/top-100-us-restaurants-2024/</a></p>
-<div id="motivation" class="section level2">
-<h2>Motivation</h2>
 <p>It is hard for anyone to find a good restaurant, no matter if they
 stay in the same place for a long time or just move in like us. When
 people do not know where to eat, rating apps such as yelp would be a key
 resource for people to use. However, it led to an interesting question
 to us: what factors could correlate with rates or stars.</p>
-</div>
-<div id="also-my-best-friend" class="section level2">
-<h2>Also my best friend</h2>
-</div>
+<hr />
 <div id="project-overview" class="section level2">
 <h2>Project Overview</h2>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
 </iframe>
 <hr />
+</div>
+<div id="restaurant-around-southeastern-pa" class="section level2">
+<h2>Restaurant Around Southeastern PA</h2>
+<pre class="r"><code>us_counties &lt;- st_read(here::here(&quot;UScounty&quot;, &quot;tl_2023_us_county.shp&quot;), quiet = TRUE)
+
+pa_counties &lt;- us_counties %&gt;%
+  filter(STATEFP == &quot;42&quot;)  
+
+se_pa_counties &lt;- pa_counties %&gt;%
+  filter(NAME %in% c(&quot;Philadelphia&quot;, &quot;Delaware&quot;, &quot;Montgomery&quot;, &quot;Chester&quot;, &quot;Bucks&quot;)) 
+
+
+ggplot() +
+  geom_sf(data = se_pa_counties, color = &quot;black&quot;, fill = &quot;lightgrey&quot;, size = 0.8) +
+  geom_point(
+    data = mergedPA,
+    aes(x = longitude, y = latitude, color = stars),
+    size = 0.5, alpha = 0.5) +
+  geom_sf_text(
+    data = se_pa_counties,
+    aes(label = NAME),
+    size = 4, color = &quot;black&quot;, fontface = &quot;bold&quot;) +
+  coord_sf(xlim = c(-76, -74.5), ylim = c(39.7, 40.5), expand = FALSE) +
+  theme_void(base_size = 15) +
+  theme(
+    legend.position = &quot;bottom&quot;,
+    plot.title = element_text(hjust = 0.5, size = 16)) +
+  guides(color = guide_legend(
+    title.position = &quot;top&quot;,
+    override.aes = list(size = 3))) +
+  scale_color_viridis_c(option = &quot;D&quot;, name = &quot;Stars&quot;) +
+  labs(
+    title = &quot;Restaurant Ratings in Southeastern Pennsylvania (By County)&quot;,
+    color = &quot;Stars&quot;
+  )</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" width="768" /></p>
 <div id="looking-for-some-fantastic-food" class="section level3">
 <h3>Looking for some fantastic food?</h3>
 </div>
@@ -376,12 +422,15 @@ class="section level3">
 </div>
 <div id="looking-for-a-match-for-special-needs" class="section level3">
 <h3>Looking for a match for special needs?</h3>
+</div>
+</div>
+<div id="interactive-map-here" class="section level1">
+<h1>interactive map here</h1>
 <p><img src="picture/looking.png" /></p>
 <hr />
 <p>For more informartion about yelp.data and some nice restaurant, check
 out <a href="https://www.yelp.com/dataset"
 class="uri">https://www.yelp.com/dataset</a></p>
-</div>
 </div>
 
 
@@ -419,6 +468,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 <script>
 $(document).ready(function ()  {

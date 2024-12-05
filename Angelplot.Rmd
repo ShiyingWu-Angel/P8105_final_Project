@@ -137,29 +137,38 @@ plot_ly(
 
 ```
 
-```{r cars, fig.width = 8, fig.asp = 0.6}
-pa_map <- st_read(here::here("PAMAP", "tl_rd22_42_place.shp"), quiet = TRUE)
 
-long_limits <- c(-76, -74.5)  
-lat_limits <- c(39.7, 40.5)  
+```{r, fig.width = 8, fig.asp = 0.8}
+us_counties <- st_read(here::here("UScounty", "tl_2023_us_county.shp"), quiet = TRUE)
+
+pa_counties <- us_counties %>%
+  filter(STATEFP == "42")  
+
+se_pa_counties <- pa_counties %>%
+  filter(NAME %in% c("Philadelphia", "Delaware", "Montgomery", "Chester", "Bucks")) 
+
 
 ggplot() +
-  geom_sf(data = pa_map, color = "grey", fill = "lightgrey") +  # Base map
+  geom_sf(data = se_pa_counties, color = "black", fill = "lightgrey", size = 0.8) +
   geom_point(
     data = mergedPA,
-    aes(x = longitude, y = latitude, color = stars),  # Restaurant points
-    size = 0.5, alpha = 0.5
-  ) +
-  coord_sf(xlim = long_limits, ylim = lat_limits, expand = FALSE) +  # Zoom to SE PA
-  theme_void(base_size = 15) +  # Minimalist theme
-  theme(legend.position = "bottom") +  # Position legend at the bottom
+    aes(x = longitude, y = latitude, color = stars),
+    size = 0.5, alpha = 0.5) +
+  geom_sf_text(
+    data = se_pa_counties,
+    aes(label = NAME),
+    size = 4, color = "black", fontface = "bold") +
+  coord_sf(xlim = c(-76, -74.5), ylim = c(39.7, 40.5), expand = FALSE) +
+  theme_void(base_size = 15) +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(hjust = 0.5, size = 16)) +
   guides(color = guide_legend(
     title.position = "top",
-    override.aes = list(size = 3)
-  )) +
-  scale_color_gradient(low = "blue", high = "red") +  # Color gradient for ratings
+    override.aes = list(size = 3))) +
+  scale_color_viridis_c(option = "D", name = "Stars") +
   labs(
-    title = "Restaurant Ratings in Southeastern Pennsylvania",
+    title = "Restaurant Ratings in Southeastern Pennsylvania (By County)",
     color = "Stars"
   )
 ```

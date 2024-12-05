@@ -1,7 +1,8 @@
 ---
-title: "Fantastic Eats and Where to Find Them:  Southeastern PA Version"
+title: "Fantastic Eats and Where to Find Them: Southeastern PA Version"
 output: 
   html_document:
+    code_folding: hide
     toc: true
     toc_float: true
 ---
@@ -10,6 +11,7 @@ output:
 library(tidyverse)
 library(ggplot2)
 library(plotly)
+library(sf) 
 ```
 
 ```{r, include = FALSE}
@@ -21,11 +23,8 @@ load("data/mergedPA.RData")
 ![](picture/yelp-top-100-us-restaurants.jpeg)
 Photo from:  https://www.yelp.com/article/top-100-us-restaurants-2024/ 
 
-## Motivation
-
 It is hard for anyone to find a good restaurant, no matter if they stay in the same place for a long time or just move in like us. When people do not know where to eat, rating apps such as yelp would be a key resource for people to use. However, it led to an interesting question to us: what factors could correlate with rates or stars. 
 
-Also my best friend 
 ---
 
 ## Project Overview
@@ -39,11 +38,47 @@ Also my best friend
 
 ---
 
+## Restaurant Around Southeastern PA
+
+```{r, fig.width = 8, fig.asp = 0.6, warning=FALSE}
+us_counties <- st_read(here::here("UScounty", "tl_2023_us_county.shp"), quiet = TRUE)
+
+pa_counties <- us_counties %>%
+  filter(STATEFP == "42")  
+
+se_pa_counties <- pa_counties %>%
+  filter(NAME %in% c("Philadelphia", "Delaware", "Montgomery", "Chester", "Bucks")) 
+
+
+ggplot() +
+  geom_sf(data = se_pa_counties, color = "black", fill = "lightgrey", size = 0.8) +
+  geom_point(
+    data = mergedPA,
+    aes(x = longitude, y = latitude, color = stars),
+    size = 0.5, alpha = 0.5) +
+  geom_sf_text(
+    data = se_pa_counties,
+    aes(label = NAME),
+    size = 4, color = "black", fontface = "bold") +
+  coord_sf(xlim = c(-76, -74.5), ylim = c(39.7, 40.5), expand = FALSE) +
+  theme_void(base_size = 15) +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(hjust = 0.5, size = 16)) +
+  guides(color = guide_legend(
+    title.position = "top",
+    override.aes = list(size = 3))) +
+  scale_color_viridis_c(option = "D", name = "Stars") +
+  labs(
+    title = "Restaurant Ratings in Southeastern Pennsylvania (By County)",
+    color = "Stars"
+  )
+```
 
 ### Looking for some fantastic food?
 ### Looking for fancy places to eat for date?
 ### Looking for a match for special needs?
-
+# interactive map here
 ![](picture/looking.png)
 
 

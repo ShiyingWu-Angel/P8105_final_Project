@@ -1,0 +1,102 @@
+---
+title: "Regional Analyze"
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+library(sf) 
+```
+
+```{r, include = FALSE}
+load("data/mergedPA.RData")
+```
+
+---
+
+```{r plot number of restaurant in county}
+county_counts <- mergedPA |>
+  group_by(county) |>
+  summarise(count = n(), .groups = "drop") |>
+  mutate(county = fct_reorder(county, count)) 
+
+plot_ly(
+  data = county_counts,
+  x = ~county,
+  y = ~count,
+  color = ~county,
+  type = "bar",
+  colors = "viridis"
+) |> 
+  layout(
+    title = "Number of Entries by County",
+    xaxis = list(title = "County", showticklabels = TRUE),
+    yaxis = list(title = "Count"),
+    showlegend = FALSE
+  )
+```
+
+```{r plot average star}
+avg_stars <- mergedPA |>
+  group_by(county) |>
+  summarise(avg_stars = mean(stars, na.rm = TRUE), .groups = "drop") |>
+  arrange(desc(avg_stars)) |> 
+  mutate(county = fct_reorder(county, avg_stars))
+
+plot_ly(
+  data = avg_stars,
+  x = ~county,
+  y = ~avg_stars,
+  color = ~county,
+  type = "bar",
+  colors = "viridis"
+) |> 
+  layout(
+    title = "Average Ratings by County",
+    xaxis = list(title = "County", showticklabels = TRUE),
+    yaxis = list(title = "Average Stars", range = c(3, 4)),
+    showlegend = FALSE
+  )
+```
+
+```{r popular histogram plot}
+stacked_data <- mergedPA |>
+  separate_rows(categories, sep = ",\\s*") |> 
+  group_by(categories, county) |>
+  summarise(count = n(), .groups = "drop") |>  
+  ungroup()
+
+top_tags <- stacked_data |>
+  group_by(categories) |>
+  summarise(total_count = sum(count), .groups = "drop") |>
+  arrange(desc(total_count)) |>
+  slice_max(total_count, n = 10) |>
+  pull(categories) 
+
+stacked_data <- stacked_data |>
+  filter(categories %in% top_tags) |>
+  mutate(categories = factor(categories, levels = top_tags))
+  
+
+plot_ly(
+  data = stacked_data,
+  x = ~categories,       
+  y = ~count,         
+  color = ~county,   
+  type = "bar",       
+  colors = "viridis"
+) |> 
+  layout(
+    title = "Top 10 Restaurant Tags by County",
+    xaxis = list(title = "Restaurant Tag", tickangle = 45), 
+    yaxis = list(title = "Count"),
+    barmode = "stack"
+  )
+
+```
