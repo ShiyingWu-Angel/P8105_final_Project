@@ -40,16 +40,16 @@ county_restaurant_counts <- county_restaurant_counts %>%
   mutate(county = tolower(county))
 
 pa_counties <- pa_counties %>%
-  mutate(NAME = tolower(NAME))  # Ensure matching column name exists
+  mutate(NAME = tolower(NAME))  
 
 # Join restaurant counts with county shapefile
 pa_counties_restaurants <- pa_counties %>%
   left_join(county_restaurant_counts, by = c("NAME" = "county"))
 
 ggplot(data = pa_counties_restaurants) +
-  geom_sf(aes(fill = restaurant_count)) +  # Fill counties by restaurant count
-  scale_fill_viridis_c(option = "plasma", na.value = "grey90") +  # Color palette
-  theme_minimal() +  # Minimal theme
+  geom_sf(aes(fill = restaurant_count)) +  
+  scale_fill_viridis_c(option = "plasma", na.value = "grey90") +  
+  theme_minimal() +  
   labs(
     title = "Number of Restaurants by County in Pennsylvania",
     fill = "Restaurant Count"
@@ -81,23 +81,20 @@ macaroon_palette <- c(
 # Plot the heat map for southeast PA
 
 
-
-# add county names to the plot
 county_heatmap <- ggplot(data = pa_counties_se) +
-  geom_sf(aes(fill = restaurant_count)) +  # Fill counties by restaurant count
-  #geom_text(aes(label = NAME), size = 2) +  # Add county names
+  geom_sf(aes(fill = restaurant_count)) +  
+  #geom_text(aes(label = NAME), size = 2) +  # Trying to add county names
   scale_fill_gradientn(
     colors = macaroon_palette, 
-    #na.value = "grey90",  
     name = "Restaurant Count"  
   ) +
-  theme_minimal() + theme(panel.grid = element_blank()) +
+  theme_minimal() + 
+  theme(panel.grid = element_blank()) + # Remove grid
   labs(
     title = "Number of Restaurants by County in Southeast Pennsylvania",
     fill = "Restaurant Count"
   )
-# remove grid for the plot
-theme_minimal() + theme(panel.grid = element_blank())
+
 
 ```
 
@@ -114,29 +111,29 @@ zip_restaurant_counts <- filterPA %>%
   ungroup()
 
 # Fetch ZIP code boundaries for Pennsylvania
-pa_zipcodes <- zctas(state = "PA", class = "sf", year = 2010)  # Fetch as sf object
+pa_zipcodes <- zctas(state = "PA", class = "sf", year = 2010)  # Anyway, they only have 2000 and 2010 data
 
 # Ensure ZIP codes are compatible (e.g., numeric or character)
 zip_restaurant_counts <- zip_restaurant_counts %>%
   mutate(postal_code = as.character(postal_code))
 
 pa_zipcodes <- pa_zipcodes %>%
-  mutate(ZCTA5CE20 = as.character(ZCTA5CE20))  # Ensure matching column name
+  mutate(ZCTA5CE20 = as.character(ZCTA5CE20))  
 
 # Join restaurant data with ZIP code boundaries
 pa_zipcodes_restaurants <- pa_zipcodes %>%
   left_join(zip_restaurant_counts, by = c("ZCTA5CE10" = "postal_code"))
 
 zipcode_heatmap <- ggplot(data = pa_zipcodes_restaurants) +
-  geom_sf(aes(fill = restaurant_count)) +  # Fill ZIP codes by restaurant count
+  geom_sf(aes(fill = restaurant_count)) + 
   scale_fill_gradientn(
     colors = macaroon_palette, 
-    na.value = "grey90",  # Color for NA values
+    na.value = "grey90",  
     name = "Restaurant Count"
   ) +
   coord_sf(
-    xlim = c(-76, -74.7),  # Longitude limits (east of 76W)
-    ylim = c(39.7, 40.6),  # Latitude limits (south of 40.5N)
+    xlim = c(-76, -74.7),  
+    ylim = c(39.7, 40.6),  
     expand = FALSE
   ) +
   theme_minimal() +
@@ -178,7 +175,7 @@ filterPA %>%
 filterPA %>%
   ggplot(aes(x = review_count, y = stars)) +
   geom_density_2d() +
-  scale_x_log10() +  # Optionally add log scale for review_count
+  scale_x_log10() +  # Log scale for review_count
   labs(
     title = "Density Contours of Review Count vs. Stars",
     x = "Review Count",
@@ -190,7 +187,7 @@ filterPA %>%
 filterPA %>%
   ggplot(aes(x = review_count, y = stars)) +
   geom_density_2d(aes(fill = ..level..), color = "white") +
-  scale_fill_viridis_c() +  # Color palette
+  scale_fill_viridis_c() + 
   scale_x_log10() +  # Log-transform the x-axis
   labs(
     title = "Density Contours of Review Count vs. Stars",
@@ -202,17 +199,6 @@ filterPA %>%
 
 
 
-filterPA %>%
-  ggplot(aes(x = review_count, y = stars)) +
-  geom_density_2d_filled(aes(fill = ..level..)) +  # Use filled density contours
-  scale_fill_viridis_c() +  # Add a perceptually uniform color palette
-  scale_x_log10() +  # Log-transform the x-axis
-  labs(
-    title = "Filled Density Contours of Review Count vs. Stars",
-    x = "Review Count",
-    y = "Stars",
-    fill = "Density"
-  ) +
-  theme_minimal()
+
 
 ```
