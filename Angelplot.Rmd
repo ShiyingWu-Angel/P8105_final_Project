@@ -139,13 +139,8 @@ plot_ly(
 
 
 ```{r, fig.width = 8, fig.asp = 0.8}
-us_counties <- st_read(here::here("UScounty", "tl_2023_us_county.shp"), quiet = TRUE)
 
-pa_counties <- us_counties %>%
-  filter(STATEFP == "42")  
-
-se_pa_counties <- pa_counties %>%
-  filter(NAME %in% c("Philadelphia", "Delaware", "Montgomery", "Chester", "Bucks")) 
+pa_counties <- st_read(here::here("PACounty", "tl_rd22_42_cousub.shp"), quiet = TRUE)
 
 
 ggplot() +
@@ -155,9 +150,9 @@ ggplot() +
     aes(x = longitude, y = latitude, color = stars),
     size = 0.5, alpha = 0.5) +
   geom_sf_text(
-    data = se_pa_counties,
+    data = pa_counties,
     aes(label = NAME),
-    size = 4, color = "black", fontface = "bold") +
+    size = 2, color = "black", fontface = "bold") +
   coord_sf(xlim = c(-76, -74.5), ylim = c(39.7, 40.5), expand = FALSE) +
   theme_void(base_size = 15) +
   theme(

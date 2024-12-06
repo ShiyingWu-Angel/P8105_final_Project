@@ -17,10 +17,11 @@ NY<-data|>
   filter(str_detect(city, regex("New York", ignore_case = TRUE)))
 
 
-clean<-
+PA<-
   data|>
   janitor::clean_names()|>
-  filter(str_detect(categories, regex("restaurant", ignore_case = TRUE))) 
+  filter(str_detect(categories, regex("restaurant", ignore_case = TRUE))) |>
+  filter(state == "PA") 
 
 categories_to_keep <- c(
   "Afghan", "African", "American (New)", "American (Traditional)", 
@@ -122,5 +123,38 @@ mergedPA <- mergedPA %>%
   )
 
 save(mergedPA, file = "data/mergedPA.RData")
+ 
 
+calculate_daily_hours <- function(time_str) {
+  if (is.na(time_str) || time_str == "0:0-0:0" || time_str == "") {
+    return(0) 
+  }
+  times <- str_split(time_str, "-")[[1]]
+  start_time <- as.numeric(str_split(times[1], ":")[[1]][1])
+  end_time <- as.numeric(str_split(times[2], ":")[[1]][1])
+  if (end_time < start_time) {
+    end_time <- end_time + 24
+  }
+  return(end_time - start_time)
+}
+
+PAhour <- mergedPA %>%
+  mutate(
+    Monday_hours = sapply(hours$Monday, calculate_daily_hours),
+    Tuesday_hours = sapply(hours$Tuesday, calculate_daily_hours),
+    Wednesday_hours = sapply(hours$Wednesday, calculate_daily_hours),
+    Thursday_hours = sapply(hours$Thursday, calculate_daily_hours),
+    Friday_hours = sapply(hours$Friday, calculate_daily_hours),
+    Saturday_hours = sapply(hours$Saturday, calculate_daily_hours),
+    Sunday_hours = sapply(hours$Sunday, calculate_daily_hours),
+    Total_hours = Monday_hours + Tuesday_hours + Wednesday_hours + Thursday_hours +
+                  Friday_hours + Saturday_hours + Sunday_hours,
+    Weekday_hours = Monday_hours + Tuesday_hours + Wednesday_hours +
+                    Thursday_hours + Friday_hours,
+    Weekend_hours = Saturday_hours + Sunday_hours
+  )
+
+
+print(PAhour)
+save(mergedPA, file = "data/PAhour.RData")
 ```

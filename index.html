@@ -380,39 +380,42 @@ to us: what factors could correlate with rates or stars.</p>
 </div>
 <div id="restaurant-around-southeastern-pa" class="section level2">
 <h2>Restaurant Around Southeastern PA</h2>
-<pre class="r"><code>us_counties &lt;- st_read(here::here(&quot;UScounty&quot;, &quot;tl_2023_us_county.shp&quot;), quiet = TRUE)
-
-pa_counties &lt;- us_counties %&gt;%
-  filter(STATEFP == &quot;42&quot;)  
-
-se_pa_counties &lt;- pa_counties %&gt;%
-  filter(NAME %in% c(&quot;Philadelphia&quot;, &quot;Delaware&quot;, &quot;Montgomery&quot;, &quot;Chester&quot;, &quot;Bucks&quot;)) 
-
-
-ggplot() +
-  geom_sf(data = se_pa_counties, color = &quot;black&quot;, fill = &quot;lightgrey&quot;, size = 0.8) +
+<p>The map shows that most restaurants in Southeastern Pennsylvania are
+clustered around Philadelphia, reflecting its status as a densely
+populated urban center. The majority of ratings are green, indicating an
+average star rating around 4. Suburban counties like Montgomery and
+Bucks also have notable restaurant density, but their distribution is
+more spread out compared to the concentrated clusters in
+Philadelphia.</p>
+<pre class="r"><code>ggplot() +
+  geom_sf(data = pa_counties, color = &quot;black&quot;, fill = &quot;lightgrey&quot;, size = 0.8) + 
   geom_point(
     data = mergedPA,
     aes(x = longitude, y = latitude, color = stars),
-    size = 0.5, alpha = 0.5) +
+    size = 0.5, alpha = 0.5
+  ) +  
   geom_sf_text(
-    data = se_pa_counties,
+    data = pa_counties,
     aes(label = NAME),
-    size = 4, color = &quot;black&quot;, fontface = &quot;bold&quot;) +
-  coord_sf(xlim = c(-76, -74.5), ylim = c(39.7, 40.5), expand = FALSE) +
+    size = 3, color = &quot;black&quot;, fontface = &quot;bold&quot;
+  ) +  
+  coord_sf(xlim = c(-76, -74.5), ylim = c(39.7, 40.5), expand = FALSE) + 
   theme_void(base_size = 15) +
   theme(
     legend.position = &quot;bottom&quot;,
-    plot.title = element_text(hjust = 0.5, size = 16)) +
-  guides(color = guide_legend(
+    plot.title = element_text(hjust = 0.5, size = 16)
+  ) +
+  guides(color = guide_colorbar(
     title.position = &quot;top&quot;,
-    override.aes = list(size = 3))) +
-  scale_color_viridis_c(option = &quot;D&quot;, name = &quot;Stars&quot;) +
+    barwidth = 15,
+    barheight = 0.5
+  )) +
+  scale_color_viridis_c(option = &quot;D&quot;, name = &quot;Stars&quot;) + 
   labs(
     title = &quot;Restaurant Ratings in Southeastern Pennsylvania (By County)&quot;,
     color = &quot;Stars&quot;
   )</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" width="768" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" width="960" /></p>
 <div id="looking-for-some-fantastic-food" class="section level3">
 <h3>Looking for some fantastic food?</h3>
 </div>
@@ -422,15 +425,15 @@ class="section level3">
 </div>
 <div id="looking-for-a-match-for-special-needs" class="section level3">
 <h3>Looking for a match for special needs?</h3>
-</div>
-</div>
-<div id="interactive-map-here" class="section level1">
-<h1>interactive map here</h1>
+<p><strong>Try our <a
+href="https://github.com/ShiyingWu-Angel/P8105_final_Project">Shiny
+App</a></strong></p>
 <p><img src="picture/looking.png" /></p>
 <hr />
 <p>For more informartion about yelp.data and some nice restaurant, check
 out <a href="https://www.yelp.com/dataset"
 class="uri">https://www.yelp.com/dataset</a></p>
+</div>
 </div>
 
 

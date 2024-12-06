@@ -11,11 +11,14 @@ output:
 library(tidyverse)
 library(ggplot2)
 library(plotly)
+library(tigris)
 library(sf) 
 ```
 
 ```{r, include = FALSE}
 load("data/mergedPA.RData")
+pa_counties <- counties(state = "PA", class = "sf") |>
+  filter(NAME %in% c("Philadelphia", "Delaware", "Montgomery", "Chester", "Bucks"))
 ```
 
 ---
@@ -39,48 +42,47 @@ It is hard for anyone to find a good restaurant, no matter if they stay in the s
 ---
 
 ## Restaurant Around Southeastern PA
+The map shows that most restaurants in Southeastern Pennsylvania are clustered around Philadelphia, reflecting its status as a densely populated urban center. The majority of ratings are green, indicating an average star rating around 4. Suburban counties like Montgomery and Bucks also have notable restaurant density, but their distribution is more spread out compared to the concentrated clusters in Philadelphia.
 
-```{r, fig.width = 8, fig.asp = 0.6, warning=FALSE}
-us_counties <- st_read(here::here("UScounty", "tl_2023_us_county.shp"), quiet = TRUE)
-
-pa_counties <- us_counties %>%
-  filter(STATEFP == "42")  
-
-se_pa_counties <- pa_counties %>%
-  filter(NAME %in% c("Philadelphia", "Delaware", "Montgomery", "Chester", "Bucks")) 
-
+```{r, fig.width = 10, fig.asp = 0.8, warning=FALSE}
 
 ggplot() +
-  geom_sf(data = se_pa_counties, color = "black", fill = "lightgrey", size = 0.8) +
+  geom_sf(data = pa_counties, color = "black", fill = "lightgrey", size = 0.8) + 
   geom_point(
     data = mergedPA,
     aes(x = longitude, y = latitude, color = stars),
-    size = 0.5, alpha = 0.5) +
+    size = 0.5, alpha = 0.5
+  ) +  
   geom_sf_text(
-    data = se_pa_counties,
+    data = pa_counties,
     aes(label = NAME),
-    size = 4, color = "black", fontface = "bold") +
-  coord_sf(xlim = c(-76, -74.5), ylim = c(39.7, 40.5), expand = FALSE) +
+    size = 3, color = "black", fontface = "bold"
+  ) +  
+  coord_sf(xlim = c(-76, -74.5), ylim = c(39.7, 40.5), expand = FALSE) + 
   theme_void(base_size = 15) +
   theme(
     legend.position = "bottom",
-    plot.title = element_text(hjust = 0.5, size = 16)) +
-  guides(color = guide_legend(
+    plot.title = element_text(hjust = 0.5, size = 16)
+  ) +
+  guides(color = guide_colorbar(
     title.position = "top",
-    override.aes = list(size = 3))) +
-  scale_color_viridis_c(option = "D", name = "Stars") +
+    barwidth = 15,
+    barheight = 0.5
+  )) +
+  scale_color_viridis_c(option = "D", name = "Stars") + 
   labs(
     title = "Restaurant Ratings in Southeastern Pennsylvania (By County)",
     color = "Stars"
   )
 ```
 
+
 ### Looking for some fantastic food?
 ### Looking for fancy places to eat for date?
 ### Looking for a match for special needs?
-# interactive map here
-![](picture/looking.png)
+**Try our [Shiny App](https://github.com/ShiyingWu-Angel/P8105_final_Project)**
 
+![](picture/looking.png)
 
 ---
 
