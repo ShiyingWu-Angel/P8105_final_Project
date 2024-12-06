@@ -423,7 +423,7 @@ calculate_daily_hours &lt;- function(time_str) {
   return(end_time - start_time)
 }
 
-PAhour &lt;- mergedPA %&gt;%
+mergedPA &lt;- mergedPA |&gt;
   mutate(
     Monday_hours = sapply(hours$Monday, calculate_daily_hours),
     Tuesday_hours = sapply(hours$Tuesday, calculate_daily_hours),
@@ -440,7 +440,7 @@ PAhour &lt;- mergedPA %&gt;%
   )
 
 
-print(PAhour)</code></pre>
+print(mergedPA)</code></pre>
 <pre><code>## # A tibble: 7,801 × 22
 ##    name          address city  postal_code latitude longitude stars review_count
 ##    &lt;chr&gt;         &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;        &lt;int&gt;
@@ -460,7 +460,7 @@ print(PAhour)</code></pre>
 ## #   Wednesday_hours &lt;dbl&gt;, Thursday_hours &lt;dbl&gt;, Friday_hours &lt;dbl&gt;,
 ## #   Saturday_hours &lt;dbl&gt;, Sunday_hours &lt;dbl&gt;, Total_hours &lt;dbl&gt;,
 ## #   Weekday_hours &lt;dbl&gt;, Weekend_hours &lt;dbl&gt;</code></pre>
-<pre class="r"><code>save(PAhour, file = &quot;data/PAhour.RData&quot;)</code></pre>
+<pre class="r"><code>save(mergedPA, file = &quot;data/mergedPA.RData&quot;)</code></pre>
 
 
 

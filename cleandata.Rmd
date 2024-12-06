@@ -138,7 +138,7 @@ calculate_daily_hours <- function(time_str) {
   return(end_time - start_time)
 }
 
-PAhour <- mergedPA %>%
+mergedPA <- mergedPA |>
   mutate(
     Monday_hours = sapply(hours$Monday, calculate_daily_hours),
     Tuesday_hours = sapply(hours$Tuesday, calculate_daily_hours),
@@ -155,6 +155,6 @@ PAhour <- mergedPA %>%
   )
 
 
-print(PAhour)
-save(PAhour, file = "data/PAhour.RData")
+print(mergedPA)
+save(mergedPA, file = "data/mergedPA.RData")
 ```
