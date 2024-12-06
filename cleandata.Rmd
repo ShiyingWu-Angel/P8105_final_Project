@@ -22,17 +22,6 @@ clean<-
   janitor::clean_names()|>
   filter(str_detect(categories, regex("restaurant", ignore_case = TRUE))) 
 
-clean |>
-   group_by(state) |>
-  summarize(count = n()) |>
-  arrange(desc(count))
-
-PA<-
-  clean|>
-  filter(state == "PA") 
-unique(PA$city)
-
-
 categories_to_keep <- c(
   "Afghan", "African", "American (New)", "American (Traditional)", 
   "Andalusian", "Arabian", "Argentine", "Armenian", "Asian Fusion", "Asturian", 
@@ -83,12 +72,6 @@ filterPA<-
   group_by(name, address, city, postal_code, latitude, longitude, stars, review_count, attributes, hours) |>  
   summarize(categories = paste(unique(categories), collapse = ", ")) |> 
   ungroup()
-
-filterPA |>
-  separate_rows(categories, sep = ",\\s*")|>
-  group_by(categories) |>
-  summarize(count = n()) |>
-  arrange(desc(count))
 
 filterPA$city <- tolower(filterPA$city)
 
