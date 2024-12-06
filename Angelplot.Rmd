@@ -8,7 +8,6 @@ output: html_document
 ```{r setup, include=FALSE}
 library(ggplot2)
 library(dplyr)
-library(cluster)
 library(plotly)
 load("data/mergedPA.RData")
 library(ggplot2)
