@@ -45,7 +45,6 @@ It is hard for anyone to find a good restaurant, no matter if they stay in the s
 The map shows that most restaurants in Southeastern Pennsylvania are clustered around Philadelphia, reflecting its status as a densely populated urban center. The majority of ratings are green, indicating an average star rating around 4. Suburban counties like Montgomery and Bucks also have notable restaurant density, but their distribution is more spread out compared to the concentrated clusters in Philadelphia.
 
 ```{r, fig.width = 10, fig.asp = 0.8, warning=FALSE}
-
 ggplot() +
   geom_sf(data = pa_counties, color = "black", fill = "lightgrey", size = 0.8) + 
   geom_point(

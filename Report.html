@@ -11,7 +11,7 @@
 
 
 
-<title>Fantastic Eats and Where to Find Them: Southeastern PA Version</title>
+<title>Report</title>
 
 <script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -359,83 +359,74 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Fantastic Eats and Where to Find Them:
-Southeastern PA Version</h1>
+<h1 class="title toc-ignore">Report</h1>
 
 </div>
 
 
-<hr />
-<p><img src="picture/yelp-top-100-us-restaurants.jpeg" /> Photo from: <a
-href="https://www.yelp.com/article/top-100-us-restaurants-2024/"
-class="uri">https://www.yelp.com/article/top-100-us-restaurants-2024/</a></p>
-<p>It is hard for anyone to find a good restaurant, no matter if they
-stay in the same place for a long time or just move in like us. When
-people do not know where to eat, rating apps such as yelp would be a key
-resource for people to use. However, it led to an interesting question
-to us: what factors could correlate with rates or stars.</p>
-<hr />
-<div id="project-overview" class="section level2">
-<h2>Project Overview</h2>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
-</iframe>
-<hr />
+<div id="data" class="section level2">
+<h2><strong>Data</strong></h2>
+<div id="source" class="section level3">
+<h3><strong>Source</strong></h3>
+<p>The data for this project was obtained from <a
+href="https://www.yelp.com/dataset">Yelp’s Open Dataset</a> as JSON
+files which contain <code>150,346</code> stores including diverse types
+of shops and restaurants. Yelp provides detailed <code>58</code>
+variables on businesses, including restaurants, their locations,
+ratings, reviews, and various attributes like dog allows and price
+range. While the dataset does not include New York data, it provides
+comprehensive coverage of other regions, including PA. ###
+<strong>Scraping Method</strong> Initially, we planned to use the Yelp
+Fusion API to retrieve data, as it allows access to Yelp’s business
+information programmatically. However, the detailed datasets and larger
+limits we required were cost-prohibitive. Instead, we used the <a
+href="https://www.yelp.com/dataset">Yelp’s Open Dataset</a>. While this
+dataset did not include New York data, we decided to focus on
+Southeastern Pennsylvania, a region with a large number of observations
+and close to where Angel’s friend lives. As we explored the data
+further, we found that it included 228 cities and townships. To enhance
+the analysis, we narrowed the scope to counties, merging the data with
+county information obtained from the <a
+href="https://www.unitedstateszipcodes.org/pa/">United States zip
+codes</a>. This allowed us to provide a clearer geographic
+perspective.</p>
 </div>
-<div id="restaurant-around-southeastern-pa" class="section level2">
-<h2>Restaurant Around Southeastern PA</h2>
-<p>The map shows that most restaurants in Southeastern Pennsylvania are
-clustered around Philadelphia, reflecting its status as a densely
-populated urban center. The majority of ratings are green, indicating an
-average star rating around 4. Suburban counties like Montgomery and
-Bucks also have notable restaurant density, but their distribution is
-more spread out compared to the concentrated clusters in
-Philadelphia.</p>
-<pre class="r"><code>ggplot() +
-  geom_sf(data = pa_counties, color = &quot;black&quot;, fill = &quot;lightgrey&quot;, size = 0.8) + 
-  geom_point(
-    data = mergedPA,
-    aes(x = longitude, y = latitude, color = stars),
-    size = 0.5, alpha = 0.5
-  ) +  
-  geom_sf_text(
-    data = pa_counties,
-    aes(label = NAME),
-    size = 3, color = &quot;black&quot;, fontface = &quot;bold&quot;
-  ) +  
-  coord_sf(xlim = c(-76, -74.5), ylim = c(39.7, 40.5), expand = FALSE) + 
-  theme_void(base_size = 15) +
-  theme(
-    legend.position = &quot;bottom&quot;,
-    plot.title = element_text(hjust = 0.5, size = 16)
-  ) +
-  guides(color = guide_colorbar(
-    title.position = &quot;top&quot;,
-    barwidth = 15,
-    barheight = 0.5
-  )) +
-  scale_color_viridis_c(option = &quot;D&quot;, name = &quot;Stars&quot;) + 
-  labs(
-    title = &quot;Restaurant Ratings in Southeastern Pennsylvania (By County)&quot;,
-    color = &quot;Stars&quot;
-  )</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" width="960" /></p>
-<div id="looking-for-some-fantastic-food" class="section level3">
-<h3>Looking for some fantastic food?</h3>
+<div id="data-cleaning" class="section level3">
+<h3><strong>Data Cleaning</strong></h3>
+<p>The data cleaning process involved multiple steps to ensure accuracy,
+consistency, and relevance:</p>
+<ul>
+<li><p><strong>Removing Irrelevant Entries</strong>:<br />
+Yelp’s dataset contains various types of businesses, including
+non-restaurant establishments. We filtered the data to focus only on
+restaurants and removed irrelevant categories.</p></li>
+<li><p><strong>Geographic Normalization</strong>:<br />
+Standardized city and county names for consistency by lowercase, such as
+converting variations like “Phila” to “Philadelphia.”</p></li>
+<li><p><strong>Handling Erroneous Values</strong>:<br />
+Corrected anomalies in the data, such as fixing incorrect ZIP codes
+(e.g., changing 10426 to 19426).</p></li>
+<li><p><strong>Filtering by Counties</strong>:<br />
+To simplify analysis, we merged data based on county boundaries using
+ZIP code data and focused on five counties in Southeastern Pennsylvania:
+Philadelphia, Delaware, Montgomery, Chester, and Bucks.</p></li>
+</ul>
 </div>
-<div id="looking-for-fancy-places-to-eat-for-date"
-class="section level3">
-<h3>Looking for fancy places to eat for date?</h3>
-</div>
-<div id="looking-for-a-match-for-special-needs" class="section level3">
-<h3>Looking for a match for special needs?</h3>
-<p><strong>Try our <a
-href="https://github.com/ShiyingWu-Angel/P8105_final_Project">Shiny
-App</a></strong></p>
-<p><img src="picture/looking.png" /></p>
-<hr />
-<p>For more informartion about yelp.data and some nice restaurant, check
-out <a href="https://www.yelp.com/dataset"
-class="uri">https://www.yelp.com/dataset</a></p>
+<div id="final-dataset" class="section level3">
+<h3><strong>Final Dataset</strong></h3>
+<p>The final dataset contains 7,801 observations and includes key
+variables such as:</p>
+<ul>
+<li><strong>Location Information</strong>: <code>city</code>,
+<code>county</code>, <code>postal_code</code>, <code>longitude</code>,
+and <code>latitude.</code></li>
+<li><strong>Restaurant Attributes</strong>: <code>Star</code>,
+<code>review_count</code>, <code>categories</code>,
+<code>price range</code>, and additional features like
+<code>delivery</code> or <code>takeout</code> availability.</li>
+<li><strong>Hours of Operation</strong>: <code>Everyday Hours</code>,
+<code>Weekday/Weekend hours</code>, and <code>Total hours</code>.</li>
+</ul>
 </div>
 </div>
 

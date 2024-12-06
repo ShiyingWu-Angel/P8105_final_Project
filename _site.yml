@@ -4,9 +4,11 @@ navbar:
   title: "Home"
   right:
     - text: "About"
-      href: Proposal.html
+      href: Report.html
     - text: "Regional Analyze"
       href: Regional.html
+    - text: "Rating Analyze"
+      href: Stars.html
     - icon: fa-github fa-lg
       href: https://github.com/ShiyingWu-Angel/P8105_final_Project
 output:

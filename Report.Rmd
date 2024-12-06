@@ -1,0 +1,37 @@
+---
+title: "Report"
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+---
+## **Data**
+### **Source**
+  The data for this project was obtained from [Yelp's Open Dataset](https://www.yelp.com/dataset) as JSON files which contain `150,346` stores including diverse types of shops and restaurants. Yelp provides detailed `58` variables on businesses, including restaurants, their locations, ratings, reviews, and various attributes like dog allows and price range. While the dataset does not include New York data, it provides comprehensive coverage of other regions, including PA.
+### **Scraping Method**
+  Initially, we planned to use the Yelp Fusion API to retrieve data, as it allows access to Yelp’s business information programmatically. However, the detailed datasets and larger limits we required were cost-prohibitive. Instead, we used the [Yelp's Open Dataset](https://www.yelp.com/dataset). While this dataset did not include New York data, we decided to focus on Southeastern Pennsylvania, a region with a large number of observations and close to where Angel’s friend lives.
+As we explored the data further, we found that it included 228 cities and townships. To enhance the analysis, we narrowed the scope to counties, merging the data with county information obtained from the [United States zip codes ](https://www.unitedstateszipcodes.org/pa/). This allowed us to provide a clearer geographic perspective.
+
+### **Data Cleaning**
+The data cleaning process involved multiple steps to ensure accuracy, consistency, and relevance:
+
+- **Removing Irrelevant Entries**:  
+  Yelp’s dataset contains various types of businesses, including non-restaurant establishments. We filtered the data to focus only on restaurants and removed irrelevant categories.
+
+- **Geographic Normalization**:  
+  Standardized city and county names for consistency by lowercase, such as converting variations like "Phila" to "Philadelphia."  
+
+- **Handling Erroneous Values**:  
+  Corrected anomalies in the data, such as fixing incorrect ZIP codes (e.g., changing 10426 to 19426).
+
+- **Filtering by Counties**:  
+  To simplify analysis, we merged data based on county boundaries using ZIP code data and focused on five counties in Southeastern Pennsylvania: Philadelphia, Delaware, Montgomery, Chester, and Bucks.
+
+### **Final Dataset**
+The final dataset contains 7,801 observations and includes key variables such as:
+
+- **Location Information**: `city`, `county`, `postal_code`, `longitude`, and `latitude.`
+- **Restaurant Attributes**: `Star`, `review_count`, `categories`, `price range`, and additional features like `delivery` or `takeout` availability.
+- **Hours of Operation**: `Everyday Hours`, `Weekday/Weekend hours`, and `Total hours`.
+

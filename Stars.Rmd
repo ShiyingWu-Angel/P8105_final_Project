@@ -1,0 +1,31 @@
+---
+title: "Stars"
+output: 
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+---
+```{r setup, include=FALSE}
+library(ggplot2)
+library(dplyr)
+library(plotly)
+library(sf)
+load("data/mergedPA.RData")
+```
+
+```{r scatter plot}
+
+scatter_plot <- plot_ly(
+  data = mergedPA,
+  y = ~review_count,
+  x = ~stars,
+  color = ~county,
+  type = "scatter",
+  mode = "markers",
+  colors = "viridis",
+  marker = list(opacity = 0.5)
+) 
+
+scatter_plot
+```
