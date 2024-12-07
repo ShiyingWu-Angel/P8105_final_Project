@@ -389,110 +389,6 @@ div.tocify {
 </div>
 
 
-<div id="motivation" class="section level2">
-<h2><strong>Motivation</strong></h2>
-<p>The aim of our project is to explore the relationship between
-restaurant pricing and customer ratings, and its reflection on the food
-culture and economic diversity of the city. Understanding the
-correlation between restaurant pricing and customer ratings has become
-critical as consumers demand more in terms of dietary choices and
-quality of life. We plan to analyze regional restaurant data to reveal
-potential patterns between price ranges and customer ratings, thereby
-providing the restaurant industry with a reference point for optimizing
-pricing and service enhancement.</p>
-</div>
-<div id="related-work" class="section level2">
-<h2><strong>Related Work</strong></h2>
-<p>We are inspired by a large body of research on the relationship
-between consumer behavior and commercial pricing. For example, certain
-studies suggest that high pricing may imply high quality, but in
-practice, consumer ratings may focus more on service experience and
-dining quality than on price. These studies emphasize the importance of
-analyzing price in conjunction with reviews. By integrating data from
-platforms such as Yelp, our project attempts to systematically analyze
-the relationship between price ranges and ratings of restaurants in the
-region, further enriching research in this area.</p>
-</div>
-<div id="initial-questions" class="section level2">
-<h2><strong>Initial Questions</strong></h2>
-<p>The purpose of this project is to answer the following question:</p>
-<ul>
-<li><p>Is there a significant correlation between a restaurant’s price
-range and customer ratings?</p></li>
-<li><p>Can we reveal patterns in the cultural and economic diversity of
-urban food from price and rating datasets?</p></li>
-<li><p>Through visualization and interactive tools, how can we help
-users quickly understand the distribution of prices and ratings of
-restaurants in different areas and choose the most compatible
-restaurant?</p></li>
-</ul>
-</div>
-<div id="data" class="section level2">
-<h2><strong>Data</strong></h2>
-<div id="source" class="section level3">
-<h3><strong>Source</strong></h3>
-<p>The data for this project was obtained from <a
-href="https://www.yelp.com/dataset">Yelp’s Open Dataset</a> as JSON
-files which contain <code>150,346</code> stores including diverse types
-of shops and restaurants. Yelp provides detailed <code>58</code>
-variables on businesses, including restaurants, their locations,
-ratings, reviews, and various attributes like dog allows and price
-range. While the dataset does not include New York data, it provides
-comprehensive coverage of other regions, including PA.</p>
-</div>
-<div id="scraping-method" class="section level3">
-<h3><strong>Scraping Method</strong></h3>
-<p>Initially, we planned to use the Yelp Fusion API to retrieve data, as
-it allows access to Yelp’s business information programmatically.
-However, the detailed datasets and larger limits we required were
-cost-prohibitive. Instead, we used the <a
-href="https://www.yelp.com/dataset">Yelp’s Open Dataset</a>. While this
-dataset did not include New York data, we decided to focus on
-Southeastern Pennsylvania, a region with a large number of observations
-and close to where Angel’s friend lives. As we explored the data
-further, we found that it included 228 cities and townships. To enhance
-the analysis, we narrowed the scope to counties, merging the data with
-county information obtained from the <a
-href="https://www.unitedstateszipcodes.org/pa/">United States zip
-codes</a>. This allowed us to provide a clearer geographic
-perspective.</p>
-</div>
-<div id="data-cleaning" class="section level3">
-<h3><strong>Data Cleaning</strong></h3>
-<p>The data cleaning process involved multiple steps to ensure accuracy,
-consistency, and relevance:</p>
-<ul>
-<li><p><strong>Removing Irrelevant Entries</strong>:<br />
-Yelp’s dataset contains various types of businesses, including
-non-restaurant establishments. We filtered the data to focus only on
-restaurants and removed irrelevant categories.</p></li>
-<li><p><strong>Geographic Normalization</strong>:<br />
-Standardized city and county names for consistency by lowercase, such as
-converting variations like “Phila” to “Philadelphia.”</p></li>
-<li><p><strong>Handling Erroneous Values</strong>:<br />
-Corrected anomalies in the data, such as fixing incorrect ZIP codes
-(e.g., changing 10426 to 19426).</p></li>
-<li><p><strong>Filtering by Counties</strong>:<br />
-To simplify analysis, we merged data based on county boundaries using
-ZIP code data and focused on five counties in Southeastern Pennsylvania:
-Philadelphia, Delaware, Montgomery, Chester, and Bucks.</p></li>
-</ul>
-</div>
-<div id="final-dataset" class="section level3">
-<h3><strong>Final Dataset</strong></h3>
-<p>The final dataset contains 7,801 observations and includes key
-variables such as:</p>
-<ul>
-<li><strong>Location Information</strong>: <code>city</code>,
-<code>county</code>, <code>postal_code</code>, <code>longitude</code>,
-and <code>latitude.</code></li>
-<li><strong>Restaurant Attributes</strong>: <code>Star</code>,
-<code>review_count</code>, <code>categories</code>,
-<code>price range</code>, and additional features like
-<code>delivery</code> or <code>takeout</code> availability.</li>
-<li><strong>Hours of Operation</strong>: <code>Everyday Hours</code>,
-<code>Weekday/Weekend hours</code>, and <code>Total hours</code>.</li>
-</ul>
 <pre class="r"><code>library(dplyr)
 library(ggplot2)
 library(tidyr)
@@ -501,7 +397,6 @@ library(plotly)
 library(sf)
 library(broom)
 load(&quot;data/PAhour.rdata&quot;)</code></pre>
-</div>
 <div id="basic-analysis" class="section level3">
 <h3><strong>Basic analysis</strong></h3>
 <p>In the third question, after examining the relationship between price
@@ -567,7 +462,7 @@ credit_card_popularity_model|&gt;
 </table>
 <pre class="r"><code>qqnorm(residuals(credit_card_popularity_model), main = &quot;QQ Plot: Credit Card Popularity Model&quot;)
 qqline(residuals(credit_card_popularity_model), col = &quot;red&quot;)</code></pre>
-<p><img src="Report_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="Model-building_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 </div>
 <div id="reflection-and-improvement" class="section level3">
 <h3><strong>Reflection and improvement</strong></h3>
@@ -591,7 +486,7 @@ hours_popularity_model &lt;- lm(log(popularity_score+1) ~ weekday_hours + weeken
 
 qqnorm(residuals(hours_popularity_model), main = &quot;QQ Plot: Hours Popularity Model&quot;)
 qqline(residuals(hours_popularity_model), col = &quot;red&quot;)</code></pre>
-<p><img src="Report_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="Model-building_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <pre class="r"><code>hours_popularity_model|&gt;
   tidy() %&gt;%
   knitr::kable(digits = 3)</code></pre>
@@ -726,35 +621,9 @@ multiple_model &lt;- lm(
 <p>We can see from the qq plot that the model fit is not bad.</p>
 <pre class="r"><code>qqnorm(residuals(multiple_model), main = &quot;QQ Plot of Residuals&quot;)
 qqline(residuals(multiple_model), col = &quot;red&quot;)</code></pre>
-<p><img src="Report_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="Model-building_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <pre class="r"><code>plot(multiple_model, which = 1, main = &quot;Residuals vs Fitted&quot;)</code></pre>
-<p><img src="Report_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
-</div>
-</div>
-<div id="r-shiny-app-to-choose-the-most-compatible-restaurant"
-class="section level2">
-<h2><strong>R shiny App to choose the most compatible
-restaurant</strong></h2>
-<p>We developed an R Shiny application to help users explore restaurants
-in Pennsylvania based on their preferences, including city, meal day,
-time range, category, price range, and stars. Users can interact with
-the app by selecting specific criteria to generate a tailored
-visualization of restaurant data. The app integrates various
-visualizations, including:</p>
-<ul>
-<li><p><strong>Map Visualization</strong>: Displays restaurant locations
-within the selected city. Color intensity reflects the number of
-reviews, allowing users to gauge popularity by geographic area.</p></li>
-<li><p><strong>Category Frequency</strong>: Shows the distribution of
-restaurant categories across the city, enabling users to identify
-popular cuisines.</p></li>
-<li><p><strong>Price and Rating Distribution</strong>: Highlights the
-relationship between price range and star ratings. Users can see the
-distribution of restaurants grouped by star ratings and price per
-person.</p></li>
-</ul>
-<p>Below is a screenshot to illustrate it.</p>
-<p><img src="picture/shiny.jpg" /></p>
+<p><img src="Model-building_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
 </div>
 
 

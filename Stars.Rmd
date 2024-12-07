@@ -7,10 +7,20 @@ output:
     toc_float: true
 ---
 ```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,    
+  warning = FALSE,
+  message = FALSE   
+)
+```
+
+```{r load-packages, message=FALSE, warning=FALSE}
 library(ggplot2)
 library(dplyr)
 library(plotly)
+library(janitor)
 library(sf)
+library(broom)
 load("data/mergedPA.RData")
 ```
 
@@ -28,3 +38,90 @@ scatter_plot <- plot_ly(
 
 scatter_plot
 ```
+
+**How does review correlate with stars?**
+
+For the first question, we want to explore the relationship between the number of reviews and ratings. We assumed that it was linearly positively correlated, so we built a linear model. But the facts told us otherwise, and we tried to investigate the possibilities, and in our analysis we found that the number of reviews and ratings are extreme, for example, a restaurant with only 1 review tends to have a very high or very low score.
+```{r}
+#How does review correlate with stars?
+# Load dataset
+load("data/PAhour.rdata")
+data <- PAhour %>%
+  mutate(
+    attributes$RestaurantsPriceRange2 == case_match(attributes$RestaurantsPriceRange2,
+     "1" ~ "0-10",
+     "2" ~ "11-30",
+     "3" ~ "31-60",
+     "4" ~ "61-200"
+    )
+  )
+# Ensure there are no missing values or unexpected structures
+review_star_model <- lm(review_count ~ stars, data = data)
+# Plot the linear model
+ggplot(data, aes(x = stars, y = review_count)) +
+  geom_point(alpha = 0.5, color = "blue") +
+  geom_smooth(method = "lm", col = "red") +
+  labs(title = "Linear Model: Stars vs Review Count",
+       x = "Stars",
+       y = "Review Count")
+
+```
+
+**How does review correlate with stars?（review count>1000)**
+
+So we filtered again, counting the star ratings of restaurants with 1000+ reviews and exploring the connection. From the results, it is clear that there is no relationship between the number of reviews and the rating, and that more reviews do not necessarily mean higher ratings, which is consistent with real-life situations. The scatterplot does not show a clear linear trend, suggesting that other factors may have a greater impact on the number of reviews than the star rating itself. Ratings may be influenced more by popularity, location, or marketing efforts than perceived quality through the number of reviews. The p-value = 0.22765 > 0.05 also shows that the reviewer numbers and stars are not correlated.
+
+```{r}
+filtered_high_reviews <- data %>% filter(review_count > 1000)
+high_review_star_model <- lm(review_count ~ stars, data = filtered_high_reviews)
+```
+
+```{r}
+high_review_star_model|>
+  tidy() %>%
+  knitr::kable(digits = 3)
+# Plot the linear model for Reviews > 1000
+ggplot(filtered_high_reviews, aes(x = stars, y = review_count)) +
+  geom_point(alpha = 0.5, color = "darkgreen") +
+  geom_smooth(method = "lm", col = "red") +
+  labs(title = "Linear Model: Stars vs Review Count (Reviews > 1000)",
+       x = "Stars",
+       y = "Review Count")
+```
+
+
+**Does the price range have higher quality with a higher star?**
+
+For this question, we attempted to explore the relationship between a restaurant's pricing range and ratings. We set the per capita pricing ranges of restaurants as 0-10, 11-30, 31-60, and 61-200.We grouped the restaurants by pricing ranges and averaged their corresponding ratings for the study because such statistics are intuitively valid. At the same time, we visualize the relationship using a scatterplot with a regression line, and add a bubble plot to react to the number of corresponding star ratings by the shade of the bubble color. We found from the data that as the price per capita rises, restaurants tend to have better ratings. While restaurants with higher prices tend to receive better ratings, price range is not the only determinant of quality. Factors that influence ratings are also such as type of cuisine, service, and location, to name a few.
+```{r}
+filtered_price_data <- PAhour %>% filter(!is.na(attributes$RestaurantsPriceRange2)&(attributes$RestaurantsPriceRange2 != "None"))
+filtered_price_range_star_model <- lm(stars ~ attributes$RestaurantsPriceRange2, data = filtered_price_data)
+price_star_summary <- filtered_price_data %>%
+  group_by(attributes$RestaurantsPriceRange2) %>%
+  summarise(average_stars = mean(stars, na.rm = TRUE), .groups = 'drop')
+
+price_star_summary %>%
+  knitr::kable(
+    digits = 3,               # Set decimal places to 3
+    col.names = c("Price Range", "Average Stars"),  # Column headers
+    align = "c",              # Center-align columns
+    caption = "Average Stars by Price Range"
+  )
+```
+
+```{r}
+
+# Plot the linear model for Price Range and Star Rating with filtered data
+ggplot(filtered_price_data, aes(x = attributes$RestaurantsPriceRange2, y = stars)) +
+  geom_point(alpha = 0.4, color = "purple") +
+  geom_smooth(method = "lm", col = "red") +
+  labs(title = "Linear Model: Price Range vs Star Rating (Filtered NA)",
+       x = "Price Range",
+       y = "Star Rating")
+
+#Does the price range have higher quality with a higher star?
+# Analysis of price range and star ratings
+```
+
+
+
