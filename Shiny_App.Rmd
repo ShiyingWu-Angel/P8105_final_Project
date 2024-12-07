@@ -1,0 +1,318 @@
+---
+title: "Get your ideal restaurants in PA"
+output:
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    # css: style.css
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(plotly)
+library(viridis)
+library(shiny)
+library(jsonlite)
+library(leaflet)
+library(rsconnect)
+```
+
+```{r}
+load("data/filterPA.RData")
+county = read.csv("data/PA-city-county.csv")
+```
+
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+<div style="padding-bottom: 20px;">
+  <h2 style="margin-bottom: 20px;">Select Your Profile</h2>
+</div>
+
+```{r}
+clean_and_format_parking <- function(parking) {
+  if (is.na(parking)) return("No parking info available")
+
+  parking <- gsub("'", "\"", parking)
+  
+  parking <- gsub("u\"", "\"", parking)
+  
+  parking <- gsub("False", "false", gsub("True", "true", gsub("None", "null", parking)))
+
+  parking_list <- tryCatch(fromJSON(parking), error = function(e) {
+    message("Parsing error:", e$message)
+    return(NULL)
+  })
+
+  if (is.null(parking_list)) return("Invalid parking data")
+
+  readable <- paste0(
+    names(parking_list), ": ", ifelse(unlist(parking_list), "Yes", "No"), collapse = ", "
+  )
+  
+  return(readable)
+}
+
+clean <- function(attire) {
+  if (is.na(attire)) return(NA) # Handle NA values
+  attire <- gsub("u'", "", attire) # Remove the u' prefix
+  attire <- gsub("'", "", attire) # Remove single quotes
+  return(attire)
+}
+
+
+filterPA = filterPA |> 
+  left_join(county, by = "city")|>
+  unnest_wider(attributes)|>
+  unnest_wider(hours)|>
+  mutate(RestaurantsPriceRange2 = 
+           case_match(RestaurantsPriceRange2,
+                      "1" ~ "0-10",
+                      "2" ~ "11-30",
+                      "3" ~ "31-60",
+                      "4" ~ "61-200"))|>
+  pivot_longer(
+    cols = Monday:Sunday,
+    names_to = "day",
+    values_to = "hour"
+  )|>
+  filter(!is.na(hour))|>  
+  separate(hour, into = c("start_time", "end_time"), sep = "-")|>
+  mutate(
+    start_time = as.numeric(substr(start_time, 1, 2)) + as.numeric(substr(start_time, 4, 5)) / 60,
+    end_time = as.numeric(substr(end_time, 1, 2)) + as.numeric(substr(end_time, 4, 5)) / 60
+  )|>
+  separate(categories, into = c("categories", "other_categories"), sep = ",", extra = "drop")|>
+  mutate(WiFi = gsub(".*'(.*?)'.*", "\\1", WiFi),
+         BusinessParking = sapply(BusinessParking,clean_and_format_parking),
+         across(everything(), ~ ifelse(is.na(.), "No info", .)),
+         NoiseLevel = sapply(NoiseLevel,clean),
+         RestaurantsAttire = sapply(RestaurantsAttire,clean),
+         Alcohol = sapply(Alcohol,clean),
+         name = gsub("^[^a-zA-Z0-9]+", "", name)
+)
+  
+
+# histogram
+# filterPA |>
+#   separate(RestaurantsPriceRange2, into = c("min_price", "max_price"), sep = "-")|>
+#   group_by(city)|>
+#   summarize(
+#     max_price = max(as.numeric(max_price), na.rm = TRUE),
+#     min_price = min(as.numeric(min_price), na.rm = TRUE),
+#     price_range = max_price - min_price
+#   ) |>
+#   ggplot(aes(x = reorder(city, price_range), y = price_range, fill = city)) +
+#   geom_col(show.legend = FALSE) +
+#   labs(
+#     title = "Price Range by City",
+#     x = "City",
+#     y = "Price Range"
+#   ) +
+#   theme_minimal() +
+#   theme(
+#     axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1,size = 5))
+
+
+city = filterPA |> 
+  distinct(city) |> 
+  pull()
+
+category = filterPA  |>
+  separate_rows(categories, sep = ", ") |>
+  distinct(categories) |>
+  arrange(categories) |>
+  pull()
+
+price_choice = filterPA |> 
+  distinct(RestaurantsPriceRange2) |> 
+  arrange(RestaurantsPriceRange2) |> 
+  filter(RestaurantsPriceRange2 != "No info")|>
+  drop_na()|> 
+  pull()
+
+day_choice = filterPA|>
+  distinct(day)|>
+  pull()
+
+stars = filterPA |>
+  distinct(stars)|>
+  arrange(stars)|>
+  pull()
+
+selectInput(
+  "city_choice", 
+  label = h5("Select city"),
+  choices = city, 
+  selected = "Philadelphia")
+
+radioButtons(
+  inputId = "day_choice", 
+  label = h5("Select Meal Day"),
+  choices = c("All" = "All",day_choice), 
+  selected = "All")
+
+sliderInput(
+        "time_range",
+        label = h5("Select Meal Time Range:"),
+        min = 0,
+        max = 23,
+        value = c(8, 23),
+        step = 0.5,
+        animate = TRUE)
+
+div(
+  selectInput(
+  "category_choice", 
+  label = h5("Select preferred category"),
+  choices = c("All" = "All",category), 
+  selected = "All"),
+  p("* Please see the plot about popular categories on the right-top corner if you selected city and meal schedule but have not decided yet.", style = "font-size: 12px; color: gray;")
+)
+
+div(
+ radioButtons(
+  inputId = "price_choice", 
+  label = h5("Select price range"),
+  choices = c("All" = "All",price_choice), 
+  selected = "All"),
+ p("* Please see the plot about the distribution of price on the right-bottom corner if you don't know how to choose the price and stars of the selected category", style = "font-size: 12px; color: gray;")
+)
+
+selectInput(
+  "stars_choice", 
+  label = h5("Select stars"),
+  choices = c("All" = "All", stars), 
+  selected = "All")
+
+```
+
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+renderLeaflet({
+  filteredPA = filterPA |> 
+  	filter(
+  		city == input[["city_choice"]], 
+  		(input[["category_choice"]] == "All" | categories == input[["category_choice"]]),
+  		(input[["price_choice"]] == "All" | RestaurantsPriceRange2 == input[["price_choice"]]),
+  		(input[["stars_choice"]] == "All" | stars == input[["stars_choice"]]),
+  		(input[["day_choice"]] == "All" | day == input[["day_choice"]]),
+  		start_time <= input[["time_range"]][1] & end_time >= input[["time_range"]][2]
+  	)
+  
+  palette <- colorNumeric(
+    palette = "YlOrRd",  # Choose a color palette (e.g., "YlOrRd" for Yellow-Orange-Red)
+    domain = filteredPA$review_count  # Apply the palette to review_count values
+  )
+  
+    leaflet(filteredPA)|>
+      addTiles()|>
+      addCircleMarkers(
+  		  ~longitude, 
+  	    ~latitude, 
+  		# type = "scatter", 
+  		# mode = "markers", 
+  		# alpha = 0.5, 
+  		  color = ~palette(review_count),
+  		  popup = ~paste(
+  		    "City: ",city,"<br>",
+  		    "Categories: ", categories, "<br>",
+  		    "Name: ",name, "<br>",
+  		    "Address: ", address, "<br>",
+  		    "Price range per person:", RestaurantsPriceRange2, "<br>",
+  		    "Stars: ", stars,"<br>",
+  		    "Open from:", start_time, "<br>",
+  		    "Close to:", end_time, "<br>",
+  		    "Accespt Credit Card: ", BusinessAcceptsCreditCards, "<br>",
+  		    "Bike Parking: ", BikeParking, "<br>",
+  		    "Restaurant Take Out: ", RestaurantsTakeOut, "<br>",
+  		    "Restaurant Delivery: ", RestaurantsDelivery, "<br>",
+  		    "Caters: ", Caters, "<br>",
+  		    "WiFi: ", WiFi, "<br>",
+  		    "Business Parking: ", BusinessParking, "<br>",
+  		    "Outdoor Seating: ", OutdoorSeating, "<br>",
+  		    "Dogs Allowed: ", DogsAllowed, "<br>",
+  		    "Good for Kids: ", GoodForKids, "<br>",
+  		    "Noise Level: ", NoiseLevel, "<br>",
+  		    "Restaurant Attires: ", RestaurantsAttire, "<br>",
+  		    "Alcohol: ", Alcohol, "<br>"
+  		  ),
+  		  radius = 6,
+  		  fillOpacity = 0.8,
+  		  stroke = FALSE)|>
+      addProviderTiles(providers$CartoDB.Positron)|>
+      addLegend(
+        "topright",  # Legend position
+        pal = palette,
+        values = ~review_count,
+        title = "Review Count",
+        opacity = 1
+    )
+})
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+renderPlotly(
+	filterPA |> 
+		filter(
+  		city == input[["city_choice"]],
+  		(input[["day_choice"]] == "All" | day == input[["day_choice"]]),
+  		start_time <= input[["time_range"]][1] & end_time >= input[["time_range"]][2]
+  	) |> 
+		count(categories) |>
+		mutate(categories = fct_reorder(categories, n))|>
+    arrange(desc(n))|>
+		plot_ly(x = ~categories, y = ~n, type = "bar")|>
+	  layout(
+	    title = "Frequency by categories"
+	  )
+)
+
+```
+
+### Chart C
+
+```{r}
+renderPlotly(
+	filterPA |> 
+		filter(
+  		city == input[["city_choice"]],
+  		categories == input[["category_choice"]],
+  		RestaurantsPriceRange2 != "No info",
+  		(input[["day_choice"]] == "All" | day == input[["day_choice"]]),
+  		start_time <= input[["time_range"]][1] & end_time >= input[["time_range"]][2]
+  	) |> 
+		  count(RestaurantsPriceRange2, stars)|>
+    mutate(
+      RestaurantsPriceRange2 = fct_reorder(RestaurantsPriceRange2, n) 
+    ) |>
+    plot_ly(
+      x = ~RestaurantsPriceRange2, 
+      y = ~n, 
+      color = ~as.factor(stars), 
+      type = "bar"
+    ) |>
+    layout(
+      barmode = "stack",  
+      title = "Price Distribution Grouped by Star Ratings",
+      xaxis = list(title = "Price Range per Person"),
+      yaxis = list(title = "Count"),
+      legend = list(title = list(text = "Star Ratings"))
+    )
+)
+```
+
