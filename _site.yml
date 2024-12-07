@@ -13,6 +13,17 @@ navbar:
       href: https://yt4617.shinyapps.io/shiny_dashboard_template/
     - icon: fa-github fa-lg
       href: https://github.com/ShiyingWu-Angel/P8105_final_Project
+    - icon: fa-envelope fa-lg
+      menu:
+        - text: "Yutong Chen"
+          href: yc4617@cumc.columbia.edu
+        - text: "Tingcheng Pan"
+          href: tp2859@cumc.columbia.edu
+        - text: "Shiying Wu"
+          href:  sw3455@cumc.columbia.edu
+        - text: "Yifan Xu"
+          href: yx2857@cumc.columbia.edu
+    
 output:
   html_document:
    theme: cerulean
