@@ -9,7 +9,7 @@ navbar:
       href: Regional.html
     - text: "Rating Analyze"
       href: Stars.html
-      text: "Model Building"
+    - text: "Model Building"
       href: Model-building.html
     - text: "Get your customized restaurant"
       href: https://yt4617.shinyapps.io/shiny_dashboard_template/

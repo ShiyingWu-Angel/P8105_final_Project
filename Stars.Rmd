@@ -66,7 +66,7 @@ densecon
   
 **How does review correlate with stars?**
 
-For the first question, we want to explore the relationship between the number of reviews and ratings. We assumed that it was linearly positively correlated, so we built a linear model. But the facts told us otherwise, and we tried to investigate the possibilities, and in our analysis we found that the number of reviews and ratings are extreme, for example, a restaurant with only 1 review tends to have a very high or very low score.
+For the first question, we want to explore the relationship between the number of reviews and stars. We assumed that it was linearly positively correlated, so we built a linear model. But the facts told us otherwise, and we tried to investigate the possibilities, and in our analysis we found that the number of reviews and stars are extreme, for example, a restaurant with only 1 review tends to have a very high or very low score.
 ```{r}
 #How does review correlate with stars?
 # Load dataset
@@ -94,7 +94,7 @@ ggplot(data, aes(x = stars, y = review_count)) +
 
 **How does review correlate with stars?（review count>1000)**
 
-So we filtered again, counting the star ratings of restaurants with 1000+ reviews and exploring the connection. From the results, it is clear that there is no relationship between the number of reviews and the rating, and that more reviews do not necessarily mean higher ratings, which is consistent with real-life situations. The scatterplot does not show a clear linear trend, suggesting that other factors may have a greater impact on the number of reviews than the star rating itself. Ratings may be influenced more by popularity, location, or marketing efforts than perceived quality through the number of reviews. The p-value = 0.22765 > 0.05 also shows that the reviewer numbers and stars are not correlated.
+So we filtered again, counting the star ratings of restaurants with 1000+ reviews and exploring the connection. From the results, it is clear that there is no relationship between the number of reviews and the star, and that more reviews do not necessarily mean higher stars, which is consistent with real-life situations. The scatterplot does not show a clear linear trend, suggesting that other factors may have a greater impact on the number of reviews than the star rating itself. Ratings may be influenced more by popularity, location, or marketing efforts than perceived quality through the number of reviews. The p-value = 0.22765 > 0.05 also shows that the reviewer numbers and stars are not correlated.
 
 ```{r}
 filtered_high_reviews <- data %>% filter(review_count > 1000)
