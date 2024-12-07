@@ -1,14 +1,11 @@
 ---
 title: "Model Building"
-author: "Tingcheng Pan"
-date: "2024-12-07"
 output:
   html_document:
     code_folding: hide
     toc: true
     toc_float: true
 ---
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   echo = TRUE,    
