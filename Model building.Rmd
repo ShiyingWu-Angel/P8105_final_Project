@@ -1,0 +1,110 @@
+---
+title: "Model Building"
+author: "Tingcheng Pan"
+date: "2024-12-07"
+output:
+  html_document:
+    code_folding: hide
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,    
+  warning = FALSE,
+  message = FALSE   
+)
+
+```
+
+```{r load-packages, message=FALSE, warning=FALSE}
+
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(janitor)
+library(plotly)
+library(sf)
+library(broom)
+load("data/PAhour.rdata")
+```
+
+In the third question, after examining the relationship between price and ratings, we wanted to learn more about other factors that influence restaurant popularity. This time, instead of using only the number of reviews or the star rating, we combined them and assigned different weights to the “popularity_score”. We weighted the star rating down to 0.3 and the review count to 0.7, which reduces the impact of the problem we mentioned in Q1 that a low number of reviews can make the score inaccurate. another reason for the review count to be more weighted is that it reflects how many people are willing to go to the restaurant and leave a review, which is a much better indicator of the popularity of the restaurant than the star rating. This is a better indicator of a restaurant's popularity than star ratings. 
+
+```{r}
+min_restaurants <- 5
+filtered_data <- PAhour %>%
+  group_by(city) %>%
+  filter(n() >= min_restaurants) %>%
+  ungroup()
+filtered_data <- filtered_data %>%
+  mutate(popularity_score = 0.3 * stars + 0.7 * review_count)
+```
+
+At the beginning, we built separate linear models for more than ten characters, one of which is shown in the figure below, and when we saw the results, we realized that it did not accurately reflect the relationship between popular score and character.
+
+```{r}
+filtered_data$attributes$BusinessAcceptsCreditCards <- tolower(filtered_data$attributes$BusinessAcceptsCreditCards)
+filtered_data$accepts_credit_cards <- ifelse(filtered_data$attributes$BusinessAcceptsCreditCards == "true", 1, 0)
+
+credit_card_popularity_model <- lm(popularity_score ~ accepts_credit_cards, data = filtered_data)
+summary(credit_card_popularity_model)
+
+qqnorm(residuals(credit_card_popularity_model), main = "QQ Plot: Credit Card Popularity Model")
+qqline(residuals(credit_card_popularity_model), col = "red")
+
+```
+
+We considered the possibility that popular_score was heavily skewed (e.g., many values were very low and a few were very high), so we re-modeled using a logarithmic transformation, and this time we were much more satisfied with the results.
+
+After the creation of the new model we found that the following factors have a significant effect on the popularity of the restaurant: BusinessAcceptsCreditCards, Delivery, OutdoorSeating, Reservations, weekday business and weekend business. Upon further exploration, we found the fact that the effect of weekday business and weekend business on the popularity of a restaurant was significant but not relevant to our analysis. The prerequisite for a restaurant to be popular is that it is open for a long time, and people can't rate a restaurant that is not open, so we excluded the factor of business hours from our model.
+```{r}
+filtered_data$weekday_hours <- as.numeric(filtered_data$Weekday_hours)
+filtered_data$weekend_hours <- as.numeric(filtered_data$Weekend_hours)
+hours_popularity_model <- lm(log(popularity_score+1) ~ weekday_hours + weekend_hours, data = filtered_data)
+summary(hours_popularity_model)
+
+
+qqnorm(residuals(hours_popularity_model), main = "QQ Plot: Hours Popularity Model")
+qqline(residuals(hours_popularity_model), col = "red")
+
+hours_popularity_model|>
+  tidy() %>%
+  knitr::kable(digits = 3)
+```
+
+So this is our final model. There are some many characteristic will influence the popularity of the restaurants. As regional differences play a significant role in determining popular foods and restaurant characteristics. Tailoring offerings to local preferences and ensuring convenience-focused features like delivery and  provide reservation service for customer can positively impact restaurant popularity.
+
+```{r}
+filtered_data$attributes$RestaurantsTakeOut <- tolower(filtered_data$attributes$RestaurantsTakeOut)
+filtered_data <- filtered_data %>%
+  mutate(
+    ByAppointmentOnly = ifelse(tolower(attributes$ByAppointmentOnly) == "true", 1, 0),
+    BusinessAcceptsCreditCards = ifelse(tolower(attributes$BusinessAcceptsCreditCards) == "true", 1, 0),
+    Delivery = ifelse(tolower(attributes$RestaurantsDelivery) == "true", 1, 0),
+    BusinessParking = ifelse(!is.na(attributes$BusinessParking) != "none", 1, 0),
+    OutdoorSeating = ifelse(tolower(attributes$OutdoorSeating) == "true", 1, 0),
+    Reservations = ifelse(tolower(attributes$RestaurantsReservations) == "true", 1, 0),
+    WheelchairAccessible  = ifelse(filtered_data$attributes$WheelchairAccessible == "true", 1, 0),
+    RestaurantsTakeOut  = ifelse(filtered_data$attributes$RestaurantsTakeOut == "true", 1, 0),
+  )
+# Fit the multiple linear regression model
+multiple_model <- lm(
+  log(popularity_score + 1) ~ ByAppointmentOnly + BusinessAcceptsCreditCards +RestaurantsTakeOut+ Delivery + OutdoorSeating + Reservations,
+  data = filtered_data
+)
+
+qqnorm(residuals(multiple_model), main = "QQ Plot of Residuals")
+qqline(residuals(multiple_model), col = "red")
+
+plot(multiple_model, which = 1, main = "Residuals vs Fitted")
+```
+
+
+```{r}
+multiple_model|>
+  tidy() %>%
+  knitr::kable(digits = 3)
+```
+

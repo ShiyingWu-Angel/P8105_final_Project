@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Tingcheng Pan" />
+
+<meta name="date" content="2024-12-07" />
+
+<title>Model Building</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="Report.html">About</a>
+</li>
+<li>
+  <a href="Regional.html">Regional Analyze</a>
+</li>
+<li>
+  <a href="Stars.html">Rating Analyze</a>
+</li>
+<li>
+  <a href="https://yt4617.shinyapps.io/shiny_dashboard_template/">Get your customized restaurant</a>
+</li>
+<li>
+  <a href="https://github.com/ShiyingWu-Angel/P8105_final_Project">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="yc4617@cumc.columbia.edu">Yutong Chen</a>
+    </li>
+    <li>
+      <a href="tp2859@cumc.columbia.edu">Tingcheng Pan</a>
+    </li>
+    <li>
+      <a href="sw3455@cumc.columbia.edu">Shiying Wu</a>
+    </li>
+    <li>
+      <a href="yx2857@cumc.columbia.edu">Yifan Xu</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Model Building</h1>
+<h4 class="author">Tingcheng Pan</h4>
+<h4 class="date">2024-12-07</h4>
+
+</div>
+
+
+<pre class="r"><code>library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(janitor)
+library(plotly)
+library(sf)
+library(broom)
+load(&quot;data/PAhour.rdata&quot;)</code></pre>
+<p>In the third question, after examining the relationship between price
+and ratings, we wanted to learn more about other factors that influence
+restaurant popularity. This time, instead of using only the number of
+reviews or the star rating, we combined them and assigned different
+weights to the “popularity_score”. We weighted the star rating down to
+0.3 and the review count to 0.7, which reduces the impact of the problem
+we mentioned in Q1 that a low number of reviews can make the score
+inaccurate. another reason for the review count to be more weighted is
+that it reflects how many people are willing to go to the restaurant and
+leave a review, which is a much better indicator of the popularity of
+the restaurant than the star rating. This is a better indicator of a
+restaurant’s popularity than star ratings.</p>
+<pre class="r"><code>min_restaurants &lt;- 5
+filtered_data &lt;- PAhour %&gt;%
+  group_by(city) %&gt;%
+  filter(n() &gt;= min_restaurants) %&gt;%
+  ungroup()
+filtered_data &lt;- filtered_data %&gt;%
+  mutate(popularity_score = 0.3 * stars + 0.7 * review_count)</code></pre>
+<p>At the beginning, we built separate linear models for more than ten
+characters, one of which is shown in the figure below, and when we saw
+the results, we realized that it did not accurately reflect the
+relationship between popular score and character.</p>
+<pre class="r"><code>filtered_data$attributes$BusinessAcceptsCreditCards &lt;- tolower(filtered_data$attributes$BusinessAcceptsCreditCards)
+filtered_data$accepts_credit_cards &lt;- ifelse(filtered_data$attributes$BusinessAcceptsCreditCards == &quot;true&quot;, 1, 0)
+
+credit_card_popularity_model &lt;- lm(popularity_score ~ accepts_credit_cards, data = filtered_data)
+summary(credit_card_popularity_model)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = popularity_score ~ accepts_credit_cards, data = filtered_data)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+##  -92.1  -64.4  -43.8    7.4 3927.0 
+## 
+## Coefficients:
+##                      Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)            96.400      7.485  12.879   &lt;2e-16 ***
+## accepts_credit_cards  -17.351      7.734  -2.244   0.0249 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 155 on 6770 degrees of freedom
+##   (846 observations deleted due to missingness)
+## Multiple R-squared:  0.0007429,  Adjusted R-squared:  0.0005953 
+## F-statistic: 5.033 on 1 and 6770 DF,  p-value: 0.0249</code></pre>
+<pre class="r"><code>qqnorm(residuals(credit_card_popularity_model), main = &quot;QQ Plot: Credit Card Popularity Model&quot;)
+qqline(residuals(credit_card_popularity_model), col = &quot;red&quot;)</code></pre>
+<p><img src="Model-building_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>We considered the possibility that popular_score was heavily skewed
+(e.g., many values were very low and a few were very high), so we
+re-modeled using a logarithmic transformation, and this time we were
+much more satisfied with the results.</p>
+<p>After the creation of the new model we found that the following
+factors have a significant effect on the popularity of the restaurant:
+BusinessAcceptsCreditCards, Delivery, OutdoorSeating, Reservations,
+weekday business and weekend business. Upon further exploration, we
+found the fact that the effect of weekday business and weekend business
+on the popularity of a restaurant was significant but not relevant to
+our analysis. The prerequisite for a restaurant to be popular is that it
+is open for a long time, and people can’t rate a restaurant that is not
+open, so we excluded the factor of business hours from our model.</p>
+<pre class="r"><code>filtered_data$weekday_hours &lt;- as.numeric(filtered_data$Weekday_hours)
+filtered_data$weekend_hours &lt;- as.numeric(filtered_data$Weekend_hours)
+hours_popularity_model &lt;- lm(log(popularity_score+1) ~ weekday_hours + weekend_hours, data = filtered_data)
+summary(hours_popularity_model)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = log(popularity_score + 1) ~ weekday_hours + weekend_hours, 
+##     data = filtered_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -2.4652 -0.8837 -0.1140  0.7824  4.7160 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    3.311729   0.026807  123.54   &lt;2e-16 ***
+## weekday_hours -0.014742   0.001124  -13.12   &lt;2e-16 ***
+## weekend_hours  0.050257   0.002731   18.40   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.132 on 7615 degrees of freedom
+## Multiple R-squared:  0.04666,    Adjusted R-squared:  0.04641 
+## F-statistic: 186.4 on 2 and 7615 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>qqnorm(residuals(hours_popularity_model), main = &quot;QQ Plot: Hours Popularity Model&quot;)
+qqline(residuals(hours_popularity_model), col = &quot;red&quot;)</code></pre>
+<p><img src="Model-building_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>hours_popularity_model|&gt;
+  tidy() %&gt;%
+  knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">3.312</td>
+<td align="right">0.027</td>
+<td align="right">123.542</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">weekday_hours</td>
+<td align="right">-0.015</td>
+<td align="right">0.001</td>
+<td align="right">-13.119</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">weekend_hours</td>
+<td align="right">0.050</td>
+<td align="right">0.003</td>
+<td align="right">18.402</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p>So this is our final model. There are some many characteristic will
+influence the popularity of the restaurants. As regional differences
+play a significant role in determining popular foods and restaurant
+characteristics. Tailoring offerings to local preferences and ensuring
+convenience-focused features like delivery and provide reservation
+service for customer can positively impact restaurant popularity.</p>
+<pre class="r"><code>filtered_data$attributes$RestaurantsTakeOut &lt;- tolower(filtered_data$attributes$RestaurantsTakeOut)
+filtered_data &lt;- filtered_data %&gt;%
+  mutate(
+    ByAppointmentOnly = ifelse(tolower(attributes$ByAppointmentOnly) == &quot;true&quot;, 1, 0),
+    BusinessAcceptsCreditCards = ifelse(tolower(attributes$BusinessAcceptsCreditCards) == &quot;true&quot;, 1, 0),
+    Delivery = ifelse(tolower(attributes$RestaurantsDelivery) == &quot;true&quot;, 1, 0),
+    BusinessParking = ifelse(!is.na(attributes$BusinessParking) != &quot;none&quot;, 1, 0),
+    OutdoorSeating = ifelse(tolower(attributes$OutdoorSeating) == &quot;true&quot;, 1, 0),
+    Reservations = ifelse(tolower(attributes$RestaurantsReservations) == &quot;true&quot;, 1, 0),
+    WheelchairAccessible  = ifelse(filtered_data$attributes$WheelchairAccessible == &quot;true&quot;, 1, 0),
+    RestaurantsTakeOut  = ifelse(filtered_data$attributes$RestaurantsTakeOut == &quot;true&quot;, 1, 0),
+  )
+# Fit the multiple linear regression model
+multiple_model &lt;- lm(
+  log(popularity_score + 1) ~ ByAppointmentOnly + BusinessAcceptsCreditCards +RestaurantsTakeOut+ Delivery + OutdoorSeating + Reservations,
+  data = filtered_data
+)
+
+qqnorm(residuals(multiple_model), main = &quot;QQ Plot of Residuals&quot;)
+qqline(residuals(multiple_model), col = &quot;red&quot;)</code></pre>
+<p><img src="Model-building_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>plot(multiple_model, which = 1, main = &quot;Residuals vs Fitted&quot;)</code></pre>
+<p><img src="Model-building_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
+<pre class="r"><code>multiple_model|&gt;
+  tidy() %&gt;%
+  knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">5.218</td>
+<td align="right">0.338</td>
+<td align="right">15.422</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">ByAppointmentOnly</td>
+<td align="right">0.346</td>
+<td align="right">0.264</td>
+<td align="right">1.310</td>
+<td align="right">0.191</td>
+</tr>
+<tr class="odd">
+<td align="left">BusinessAcceptsCreditCards</td>
+<td align="right">-0.947</td>
+<td align="right">0.280</td>
+<td align="right">-3.378</td>
+<td align="right">0.001</td>
+</tr>
+<tr class="even">
+<td align="left">RestaurantsTakeOut</td>
+<td align="right">-0.288</td>
+<td align="right">0.210</td>
+<td align="right">-1.370</td>
+<td align="right">0.171</td>
+</tr>
+<tr class="odd">
+<td align="left">Delivery</td>
+<td align="right">0.310</td>
+<td align="right">0.120</td>
+<td align="right">2.589</td>
+<td align="right">0.010</td>
+</tr>
+<tr class="even">
+<td align="left">OutdoorSeating</td>
+<td align="right">0.446</td>
+<td align="right">0.103</td>
+<td align="right">4.334</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">Reservations</td>
+<td align="right">0.256</td>
+<td align="right">0.103</td>
+<td align="right">2.482</td>
+<td align="right">0.013</td>
+</tr>
+</tbody>
+</table>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
