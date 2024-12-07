@@ -137,7 +137,9 @@ hours_popularity_model|>
 
 ### **FINAL MODEL**
 
-So this is our final model. There are some many characteristic will influence the popularity of the restaurants. As regional differences play a significant role in determining popular foods and restaurant characteristics. Tailoring offerings to local preferences and ensuring convenience-focused features like delivery and  provide reservation service for customer can positively impact restaurant popularity.
+So this is our final model. There are some many characteristic will influence the popularity of the restaurants.
+From the result of our model, we can see that the p-value of BusinessAcceptsCreditCards,Delivery,OutdoorSeating, and Reservations are smaller than 0.05. So they are the important characteristic that will influence the popularity of the Restaurant. It is also interesting to note that the popularity of restaurants that accept credit cards for purchases seems to have declined. We suspect that this may be due to the fact that more restaurants in the data do not accept credit cards, making the data somewhat inaccurate. Of course, from a real-life perspective, not overspending and not using credit cards may also help us develop better spending habits.
+ALl in all, as regional differences play a significant role in determining popular foods and restaurant characteristics. Tailoring offerings to local preferences and ensuring convenience-focused features like delivery and  provide reservation service for customer can positively impact restaurant popularity.
 
 ```{r}
 filtered_data$attributes$RestaurantsTakeOut <- tolower(filtered_data$attributes$RestaurantsTakeOut)
