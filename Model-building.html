@@ -397,7 +397,7 @@ library(plotly)
 library(sf)
 library(broom)
 load(&quot;data/PAhour.rdata&quot;)</code></pre>
-<p>##Basic analysis##</p>
+<p><strong>Basic analysis</strong></p>
 <p>In the third question, after examining the relationship between price
 and ratings, we wanted to learn more about other factors that influence
 restaurant popularity. This time, instead of using only the number of
@@ -417,7 +417,7 @@ filtered_data &lt;- PAhour %&gt;%
   ungroup()
 filtered_data &lt;- filtered_data %&gt;%
   mutate(popularity_score = 0.3 * stars + 0.7 * review_count)</code></pre>
-<p>##Model building and Selection##</p>
+<p><strong>Model building and Selection</strong></p>
 <p>At the beginning, we built separate linear models for more than ten
 characters, one of which is shown in the figure below, and when we saw
 the results, we realized that it did not accurately reflect the
@@ -426,30 +426,41 @@ relationship between popular score and character.</p>
 filtered_data$accepts_credit_cards &lt;- ifelse(filtered_data$attributes$BusinessAcceptsCreditCards == &quot;true&quot;, 1, 0)
 
 credit_card_popularity_model &lt;- lm(popularity_score ~ accepts_credit_cards, data = filtered_data)
-summary(credit_card_popularity_model)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = popularity_score ~ accepts_credit_cards, data = filtered_data)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-##  -92.1  -64.4  -43.8    7.4 3927.0 
-## 
-## Coefficients:
-##                      Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)            96.400      7.485  12.879   &lt;2e-16 ***
-## accepts_credit_cards  -17.351      7.734  -2.244   0.0249 *  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 155 on 6770 degrees of freedom
-##   (846 observations deleted due to missingness)
-## Multiple R-squared:  0.0007429,  Adjusted R-squared:  0.0005953 
-## F-statistic: 5.033 on 1 and 6770 DF,  p-value: 0.0249</code></pre>
+
+credit_card_popularity_model|&gt;
+  tidy() %&gt;%
+  knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">96.400</td>
+<td align="right">7.485</td>
+<td align="right">12.879</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">accepts_credit_cards</td>
+<td align="right">-17.351</td>
+<td align="right">7.734</td>
+<td align="right">-2.244</td>
+<td align="right">0.025</td>
+</tr>
+</tbody>
+</table>
 <pre class="r"><code>qqnorm(residuals(credit_card_popularity_model), main = &quot;QQ Plot: Credit Card Popularity Model&quot;)
 qqline(residuals(credit_card_popularity_model), col = &quot;red&quot;)</code></pre>
 <p><img src="Model-building_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<p>##Reflection and improvement##</p>
+<p><strong>Reflection and improvement</strong></p>
 <p>We considered the possibility that popular_score was heavily skewed
 (e.g., many values were very low and a few were very high), so we
 re-modeled using a logarithmic transformation, and this time we were
@@ -466,28 +477,9 @@ open, so we excluded the factor of business hours from our model.</p>
 <pre class="r"><code>filtered_data$weekday_hours &lt;- as.numeric(filtered_data$Weekday_hours)
 filtered_data$weekend_hours &lt;- as.numeric(filtered_data$Weekend_hours)
 hours_popularity_model &lt;- lm(log(popularity_score+1) ~ weekday_hours + weekend_hours, data = filtered_data)
-summary(hours_popularity_model)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = log(popularity_score + 1) ~ weekday_hours + weekend_hours, 
-##     data = filtered_data)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -2.4652 -0.8837 -0.1140  0.7824  4.7160 
-## 
-## Coefficients:
-##                Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)    3.311729   0.026807  123.54   &lt;2e-16 ***
-## weekday_hours -0.014742   0.001124  -13.12   &lt;2e-16 ***
-## weekend_hours  0.050257   0.002731   18.40   &lt;2e-16 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 1.132 on 7615 degrees of freedom
-## Multiple R-squared:  0.04666,    Adjusted R-squared:  0.04641 
-## F-statistic: 186.4 on 2 and 7615 DF,  p-value: &lt; 2.2e-16</code></pre>
-<pre class="r"><code>qqnorm(residuals(hours_popularity_model), main = &quot;QQ Plot: Hours Popularity Model&quot;)
+
+
+qqnorm(residuals(hours_popularity_model), main = &quot;QQ Plot: Hours Popularity Model&quot;)
 qqline(residuals(hours_popularity_model), col = &quot;red&quot;)</code></pre>
 <p><img src="Model-building_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <pre class="r"><code>hours_popularity_model|&gt;
@@ -527,7 +519,7 @@ qqline(residuals(hours_popularity_model), col = &quot;red&quot;)</code></pre>
 </tr>
 </tbody>
 </table>
-<p>##FINAL MODEL##</p>
+<p><strong>FINAL MODEL</strong></p>
 <p>So this is our final model. There are some many characteristic will
 influence the popularity of the restaurants. As regional differences
 play a significant role in determining popular foods and restaurant
