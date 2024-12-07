@@ -9,7 +9,7 @@ navbar:
       href: Regional.html
     - text: "Rating Analyze"
       href: Stars.html
-    - text: "Shiny App"
+    - text: "Get your customized restaurant"
       href: https://yt4617.shinyapps.io/shiny_dashboard_template/
     - icon: fa-github fa-lg
       href: https://github.com/ShiyingWu-Angel/P8105_final_Project
