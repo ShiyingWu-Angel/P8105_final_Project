@@ -19,12 +19,16 @@ load("data/mergedPA.RData")
 ```
 
 ---
+The number of restaurant observations varies significantly across counties in Southeastern Pennsylvania, with Philadelphia leading at 3,426 and Berks having only 22. This disparity highlights potential differences in population density, urbanization, or data representation in Yelp's dataset. Such variation could influence future analyses, especially in identifying underserved areas or trends in restaurant quality and accessibility between urban and less-populated regions.
 
-```{r plot number of restaurant in county}
+```{r plot number of restaurant in county, fig.width=8}
 county_counts <- mergedPA |>
   group_by(county) |>
   summarise(count = n(), .groups = "drop") |>
   mutate(county = fct_reorder(county, count)) 
+
+county_counts |>
+  knitr::kable()
 
 plot_ly(
   data = county_counts,
@@ -42,7 +46,9 @@ plot_ly(
   )
 ```
 
-```{r plot average star}
+The average ratings of restaurants by county in Southeastern Pennsylvania reveal an interesting trend. Berks County, despite having the fewest restaurant observations, boasts the highest average rating. This might be attributed to the limited number of observations, as previously mentioned. In contrast, the other counties, each with hundreds of restaurants, exhibit more stable average ratings. Among these, Philadelphia stands out with the highest average score, reflecting its diverse and competitive restaurant scene.
+
+```{r plot average star, fig.width=8}
 avg_stars <- mergedPA |>
   group_by(county) |>
   summarise(avg_stars = mean(stars, na.rm = TRUE), .groups = "drop") |>
@@ -65,7 +71,9 @@ plot_ly(
   )
 ```
 
-```{r popular histogram plot}
+Based on Top 10 restaurant tags across counties in Southeastern Pennsylvania,  Pizza and Sandwiches dominate as the most popular restaurant types, with Philadelphia significantly contributing to their high counts. American (Traditional) and Breakfast & Brunch also feature prominently, reflecting common preferences in the region. Interestingly, while counties like Philadelphia and Montgomery contribute the most to these tags, smaller counties like Berks have minimal representation across all tags. This stacked visualization provides insight into both the diversity and distribution of restaurant types across counties.
+ 
+```{r popular histogram plot, fig.width=8}
 stacked_data <- mergedPA |>
   separate_rows(categories, sep = ",\\s*") |> 
   group_by(categories, county) |>

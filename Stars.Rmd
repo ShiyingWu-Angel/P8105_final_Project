@@ -15,7 +15,6 @@ load("data/mergedPA.RData")
 ```
 
 ```{r scatter plot}
-
 scatter_plot <- plot_ly(
   data = mergedPA,
   y = ~review_count,
