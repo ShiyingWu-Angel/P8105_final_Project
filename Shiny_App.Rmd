@@ -20,8 +20,8 @@ library(rsconnect)
 ```
 
 ```{r}
-load("data/filterPA.RData")
-county = read.csv("data/PA-city-county.csv")
+load("filterPA.RData")
+county = read.csv("PA-city-county.csv")
 ```
 
 
@@ -29,7 +29,7 @@ Column {.sidebar}
 -----------------------------------------------------------------------
 
 <div style="padding-bottom: 20px;">
-  <h2 style="margin-bottom: 20px;">Select Your Profile</h2>
+  <h2 style="margin-bottom: 20px;">Decribe Your Desired Eats</h2>
 </div>
 
 ```{r}
@@ -195,7 +195,7 @@ selectInput(
 Column {data-width=650}
 -----------------------------------------------------------------------
 
-### Chart A
+### Eats Map
 
 ```{r}
 renderLeaflet({
@@ -263,7 +263,7 @@ renderLeaflet({
 Column {data-width=350}
 -----------------------------------------------------------------------
 
-### Chart B
+### Available Categories
 
 ```{r}
 renderPlotly(
@@ -284,7 +284,7 @@ renderPlotly(
 
 ```
 
-### Chart C
+### Corresponding Prices and Stars
 
 ```{r}
 renderPlotly(

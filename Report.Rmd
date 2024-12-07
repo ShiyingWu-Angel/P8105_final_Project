@@ -64,5 +64,5 @@ We developed an R Shiny application to help users explore restaurants in Pennsyl
 
 Below is a screenshot to illustrate it.
 
-![](picture/shinyapp.jpg)
+![](picture/shiny.jpg)
 
