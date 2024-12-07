@@ -52,14 +52,25 @@ The final dataset contains 7,801 observations and includes key variables such as
 - **Restaurant Attributes**: `Star`, `review_count`, `categories`, `price range`, and additional features like `delivery` or `takeout` availability.
 - **Hours of Operation**: `Everyday Hours`, `Weekday/Weekend hours`, and `Total hours`.
 
----
-title: "Model Building"
-output:
-  html_document:
-    code_folding: hide
-    toc: true
-    toc_float: true
----
+## **Exploratory analysis**
+
+### **Regional analysis**
+The distribution of restaurants across counties reveals notable disparities. Philadelphia, with 3,426 observations, significantly surpasses all other counties, while Berks, with just 22 restaurants, has the fewest. This stark contrast underscores differences in population density, urbanization, and possibly Yelp's data coverage. These disparities may highlight underserved areas or variations in restaurant accessibility and quality between urban and rural settings.
+
+Interestingly, despite its small sample size, Berks County boasts the highest average restaurant rating, likely influenced by the limited data. In contrast, more populous counties, such as Philadelphia and Montgomery, exhibit stable and slightly lower average ratings. Among these, Philadelphia stands out for its consistently high scores, likely reflecting its competitive and diverse dining scene.
+
+Price range analysis further highlights regional contrasts. By calculating the range of prices for restaurants, we found that Philadelphia and Montgomery offer the widest variety of dining options. Meanwhile, Berks County exhibits a narrow price range, underscoring its limited culinary diversity.
+
+### **Rating analysis**
+
+- **How does review count correlate with stars?**
+
+Initially, we hypothesized a positive linear relationship between review count and star ratings. However, our analysis revealed otherwise—restaurants with only one review often have either very high or very low ratings, indicating extreme opinions. Filtering for restaurants with over 1,000 reviews, we found no significant correlation between review count and ratings (p-value = 0.22765). The scatterplot showed no linear trend, suggesting factors like location, popularity, or marketing may have a greater impact on review counts than ratings themselves.
+
+- **Does the price range correlate with higher ratings?**
+
+By grouping restaurants into price ranges ($0–$10, $11–$30, $31–$60, $61–$200) and analyzing average star ratings, we observed a positive trend: higher price ranges generally corresponded to better ratings. However, this relationship, while evident, is not absolute. Ratings are also influenced by other factors such as cuisine type, service quality, and location, highlighting that price alone does not determine restaurant quality. For instance, average stars ranged from 3.36 for the lowest price range to 3.78 for the highest.
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   echo = TRUE,    
@@ -81,6 +92,7 @@ library(broom)
 load("data/PAhour.rdata")
 ```
 
+## **Statistical Model**
 ### **Basic analysis**
 
 In the third question, after examining the relationship between price and ratings, we wanted to learn more about other factors that influence restaurant popularity. This time, instead of using only the number of reviews or the star rating, we combined them and assigned different weights to the “popularity_score”. We weighted the star rating down to 0.3 and the review count to 0.7, which reduces the impact of the problem we mentioned in Q1 that a low number of reviews can make the score inaccurate. another reason for the review count to be more weighted is that it reflects how many people are willing to go to the restaurant and leave a review, which is a much better indicator of the popularity of the restaurant than the star rating. This is a better indicator of a restaurant's popularity than star ratings. 
@@ -179,8 +191,6 @@ qqline(residuals(multiple_model), col = "red")
 plot(multiple_model, which = 1, main = "Residuals vs Fitted")
 ```
 
-
-
 ## **R shiny App to choose the most compatible restaurant**
 We developed an R Shiny application to help users explore restaurants in Pennsylvania based on their preferences, including city, meal day, time range, category, price range, and stars. Users can interact with the app by selecting specific criteria to generate a tailored visualization of restaurant data. The app integrates various visualizations, including:
 
@@ -194,3 +204,9 @@ Below is a screenshot to illustrate it.
 
 ![](picture/shiny.jpg)
 
+## **Discussion**
+Overall, our analysis highlights several insights into restaurant ratings and trends in Southeastern Pennsylvania. However, the limitations of the Yelp Open Dataset should be noted. The dataset does not contain all possible data points, which introduces potential biases in geographic and demographic representation. Additionally, a significant number of missing values for variables such as hours of operation and specific restaurant attributes posed challenges for our statistical models.
+
+Another limitation is the lack of temporal context—the dataset does not specify when the data was collected. This makes it difficult to account for potential changes over time, such as shifts in restaurant quality, reviews, or operational status. Furthermore, since much of the data entry is provided by restaurant owners, small inaccuracies or biases may exist in fields like price ranges or restaurant attributes, potentially influencing the outcomes of our analysis.
+
+Despite these limitations, our project successfully identified trends in ratings, popular restaurant types, and spatial distributions. While the findings provide valuable insights, future studies could benefit from a more complete dataset, additional temporal data, and verified entries to improve the robustness of the analysis. We hope our exploratory work encourages further research and inspires tools to better assist users in discovering fantastic dining experiences.

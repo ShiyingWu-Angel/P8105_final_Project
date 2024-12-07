@@ -11,7 +11,7 @@
 
 
 
-<title>Model Building</title>
+<title>Report</title>
 
 <script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -384,7 +384,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Model Building</h1>
+<h1 class="title toc-ignore">Report</h1>
 
 </div>
 
@@ -493,6 +493,57 @@ and <code>latitude.</code></li>
 <li><strong>Hours of Operation</strong>: <code>Everyday Hours</code>,
 <code>Weekday/Weekend hours</code>, and <code>Total hours</code>.</li>
 </ul>
+</div>
+</div>
+<div id="exploratory-analysis" class="section level2">
+<h2><strong>Exploratory analysis</strong></h2>
+<div id="regional-analysis" class="section level3">
+<h3><strong>Regional analysis</strong></h3>
+<p>The distribution of restaurants across counties reveals notable
+disparities. Philadelphia, with 3,426 observations, significantly
+surpasses all other counties, while Berks, with just 22 restaurants, has
+the fewest. This stark contrast underscores differences in population
+density, urbanization, and possibly Yelp’s data coverage. These
+disparities may highlight underserved areas or variations in restaurant
+accessibility and quality between urban and rural settings.</p>
+<p>Interestingly, despite its small sample size, Berks County boasts the
+highest average restaurant rating, likely influenced by the limited
+data. In contrast, more populous counties, such as Philadelphia and
+Montgomery, exhibit stable and slightly lower average ratings. Among
+these, Philadelphia stands out for its consistently high scores, likely
+reflecting its competitive and diverse dining scene.</p>
+<p>Price range analysis further highlights regional contrasts. By
+calculating the range of prices for restaurants, we found that
+Philadelphia and Montgomery offer the widest variety of dining options.
+Meanwhile, Berks County exhibits a narrow price range, underscoring its
+limited culinary diversity.</p>
+</div>
+<div id="rating-analysis" class="section level3">
+<h3><strong>Rating analysis</strong></h3>
+<ul>
+<li><strong>How does review count correlate with stars?</strong></li>
+</ul>
+<p>Initially, we hypothesized a positive linear relationship between
+review count and star ratings. However, our analysis revealed
+otherwise—restaurants with only one review often have either very high
+or very low ratings, indicating extreme opinions. Filtering for
+restaurants with over 1,000 reviews, we found no significant correlation
+between review count and ratings (p-value = 0.22765). The scatterplot
+showed no linear trend, suggesting factors like location, popularity, or
+marketing may have a greater impact on review counts than ratings
+themselves.</p>
+<ul>
+<li><strong>Does the price range correlate with higher
+ratings?</strong></li>
+</ul>
+<p>By grouping restaurants into price ranges ($0–$10, $11–$30, $31–$60,
+$61–$200) and analyzing average star ratings, we observed a positive
+trend: higher price ranges generally corresponded to better ratings.
+However, this relationship, while evident, is not absolute. Ratings are
+also influenced by other factors such as cuisine type, service quality,
+and location, highlighting that price alone does not determine
+restaurant quality. For instance, average stars ranged from 3.36 for the
+lowest price range to 3.78 for the highest.</p>
 <pre class="r"><code>library(dplyr)
 library(ggplot2)
 library(tidyr)
@@ -502,6 +553,9 @@ library(sf)
 library(broom)
 load(&quot;data/PAhour.rdata&quot;)</code></pre>
 </div>
+</div>
+<div id="statistical-model" class="section level2">
+<h2><strong>Statistical Model</strong></h2>
 <div id="basic-analysis" class="section level3">
 <h3><strong>Basic analysis</strong></h3>
 <p>In the third question, after examining the relationship between price
@@ -765,6 +819,31 @@ person.</p></li>
 </ul>
 <p>Below is a screenshot to illustrate it.</p>
 <p><img src="picture/shiny.jpg" /></p>
+</div>
+<div id="discussion" class="section level2">
+<h2><strong>Discussion</strong></h2>
+<p>Overall, our analysis highlights several insights into restaurant
+ratings and trends in Southeastern Pennsylvania. However, the
+limitations of the Yelp Open Dataset should be noted. The dataset does
+not contain all possible data points, which introduces potential biases
+in geographic and demographic representation. Additionally, a
+significant number of missing values for variables such as hours of
+operation and specific restaurant attributes posed challenges for our
+statistical models.</p>
+<p>Another limitation is the lack of temporal context—the dataset does
+not specify when the data was collected. This makes it difficult to
+account for potential changes over time, such as shifts in restaurant
+quality, reviews, or operational status. Furthermore, since much of the
+data entry is provided by restaurant owners, small inaccuracies or
+biases may exist in fields like price ranges or restaurant attributes,
+potentially influencing the outcomes of our analysis.</p>
+<p>Despite these limitations, our project successfully identified trends
+in ratings, popular restaurant types, and spatial distributions. While
+the findings provide valuable insights, future studies could benefit
+from a more complete dataset, additional temporal data, and verified
+entries to improve the robustness of the analysis. We hope our
+exploratory work encourages further research and inspires tools to
+better assist users in discovering fantastic dining experiences.</p>
 </div>
 
 
