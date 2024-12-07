@@ -63,6 +63,7 @@ densecon <- mergedPA %>%
 densecon
 
 ```
+  
 **How does review correlate with stars?**
 
 For the first question, we want to explore the relationship between the number of reviews and ratings. We assumed that it was linearly positively correlated, so we built a linear model. But the facts told us otherwise, and we tried to investigate the possibilities, and in our analysis we found that the number of reviews and ratings are extreme, for example, a restaurant with only 1 review tends to have a very high or very low score.
