@@ -4,10 +4,11 @@ output: github_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 library(tidyverse)
 library(tigris)
 library(sf)
+library(plotly)
 ```
 
 
@@ -15,53 +16,6 @@ library(sf)
 
 load("data/filterPA.RData")
 county <- read_csv("data/PA-city-county.csv", show_col_types = FALSE)
-
-```
-Heatmap by county and zipcode of number of restaurants in PA.  
-
-Scatter plot between review count and review quality.
-
-
-```{r}
-#generate a map of PA with number of restaurants as the fill color of each county
-county_restaurant_counts <- filterPA %>% 
-  left_join(county, by = c("city" = "city")) %>%
-  group_by(county) %>%
-  summarize(restaurant_count = n()) %>%
-  ungroup()
-
-
-
-# Load Pennsylvania county shapefile
-pa_counties <- counties(state = "PA", class = "sf")  # Fetch PA counties as an sf object
-
-# Ensure county names match between datasets (e.g., case consistency)
-county_restaurant_counts <- county_restaurant_counts %>%
-  mutate(county = tolower(county))
-
-pa_counties <- pa_counties %>%
-  mutate(NAME = tolower(NAME))  
-
-# Join restaurant counts with county shapefile
-pa_counties_restaurants <- pa_counties %>%
-  left_join(county_restaurant_counts, by = c("NAME" = "county"))
-
-ggplot(data = pa_counties_restaurants) +
-  geom_sf(aes(fill = restaurant_count)) +  
-  scale_fill_viridis_c(option = "plasma", na.value = "grey90") +  
-  theme_minimal() +  
-  labs(
-    title = "Number of Restaurants by County in Pennsylvania",
-    fill = "Restaurant Count"
-  )
-
-
-# Define the counties of interest
-southeast_counties <- c("montgomery", "delaware", "chester", "bucks", "berks", "philadelphia")
-
-# Filter the geographic data
-pa_counties_se <- pa_counties_restaurants %>%
-  filter(NAME %in% southeast_counties)
 
 #color way
 macaroon_palette <- c(
@@ -77,24 +31,78 @@ macaroon_palette <- c(
 
 
 )
+```
+Heatmap by county and zipcode of number of restaurants in PA.  
 
-# Plot the heat map for southeast PA
+Scatter plot between review count and review quality.
 
 
-county_heatmap <- ggplot(data = pa_counties_se) +
-  geom_sf(aes(fill = restaurant_count)) +  
-  #geom_text(aes(label = NAME), size = 2) +  # Trying to add county names
-  scale_fill_gradientn(
-    colors = macaroon_palette, 
-    name = "Restaurant Count"  
-  ) +
-  theme_minimal() + 
-  theme(panel.grid = element_blank()) + # Remove grid
-  labs(
-    title = "Number of Restaurants by County in Southeast Pennsylvania",
-    fill = "Restaurant Count"
-  )
+```{r}
 
+############ not used in the final report / website ########
+
+# #generate a map of PA with number of restaurants as the fill color of each county
+# county_restaurant_counts <- filterPA %>% 
+#   left_join(county, by = c("city" = "city")) %>%
+#   group_by(county) %>%
+#   summarize(restaurant_count = n()) %>%
+#   ungroup()
+# 
+# 
+# 
+# # Load Pennsylvania county shapefile
+# pa_counties <- counties(state = "PA", class = "sf")  # Fetch PA counties as an sf object
+# 
+# # Ensure county names match between datasets (e.g., case consistency)
+# county_restaurant_counts <- county_restaurant_counts %>%
+#   mutate(county = tolower(county))
+# 
+# pa_counties <- pa_counties %>%
+#   mutate(NAME = tolower(NAME))  
+# 
+# # Join restaurant counts with county shapefile
+# pa_counties_restaurants <- pa_counties %>%
+#   left_join(county_restaurant_counts, by = c("NAME" = "county"))
+# 
+# ggplot(data = pa_counties_restaurants) +
+#   geom_sf(aes(fill = restaurant_count)) +  
+#   scale_fill_viridis_c(option = "plasma", na.value = "grey90") +  
+#   theme_minimal() +  
+#   labs(
+#     title = "Number of Restaurants by County in Pennsylvania",
+#     fill = "Restaurant Count"
+#   )
+# 
+# 
+# # Define the counties of interest
+# southeast_counties <- c("montgomery", "delaware", "chester", "bucks", "berks", "philadelphia")
+# 
+# # Filter the geographic data
+# pa_counties_se <- pa_counties_restaurants %>%
+#   filter(NAME %in% southeast_counties)
+
+
+
+############ not used in the final report / website ########
+
+# # Plot the heat map for southeast PA
+# 
+# 
+# county_heatmap <- ggplot(data = pa_counties_se) +
+#   geom_sf(aes(fill = restaurant_count)) +  
+#   #geom_text(aes(label = NAME), size = 2) +  # Trying to add county names
+#   scale_fill_gradientn(
+#     colors = macaroon_palette, 
+#     name = "Restaurant Count"  
+#   ) +
+#   theme_minimal() + 
+#   theme(panel.grid = element_blank()) + # Remove grid
+#   labs(
+#     title = "Number of Restaurants by County in Southeast Pennsylvania",
+#     fill = "Restaurant Count"
+#   )
+# 
+# ggplotly(county_heatmap)
 
 ```
 
@@ -104,31 +112,41 @@ Heat map by zip
 
 ```{r zip}
 
+
 # Summarize restaurant counts by ZIP code
 zip_restaurant_counts <- filterPA %>%
-  group_by(postal_code) %>%
+  group_by(postal_code, city) %>%
   summarize(restaurant_count = n()) %>%
   ungroup()
 
 # Fetch ZIP code boundaries for Pennsylvania
-pa_zipcodes <- zctas(state = "PA", class = "sf", year = 2010)  # Anyway, they only have 2000 and 2010 data
+pa_zipcodes <- zctas(state = "PA", class = "sf", year = 2010)
 
 # Ensure ZIP codes are compatible (e.g., numeric or character)
 zip_restaurant_counts <- zip_restaurant_counts %>%
   mutate(postal_code = as.character(postal_code))
 
 pa_zipcodes <- pa_zipcodes %>%
-  mutate(ZCTA5CE20 = as.character(ZCTA5CE20))  
+  mutate(ZCTA5CE10 = as.character(ZCTA5CE10))
 
 # Join restaurant data with ZIP code boundaries
 pa_zipcodes_restaurants <- pa_zipcodes %>%
   left_join(zip_restaurant_counts, by = c("ZCTA5CE10" = "postal_code"))
 
+# Fetch county boundaries for Pennsylvania
+pa_counties <- tigris::counties(state = "PA", class = "sf") %>%
+  filter(NAME %in% c("Montgomery", "Delaware", "Chester", "Bucks", "Berks", "Philadelphia"))
+
+# Create a ggplot map
 zipcode_heatmap <- ggplot(data = pa_zipcodes_restaurants) +
-  geom_sf(aes(fill = restaurant_count)) + 
+  geom_sf(aes(fill = restaurant_count, text = paste0(
+    "\nCity: ", city, "\nZIP Code: ", ZCTA5CE10, "\nRestaurant Count: ", restaurant_count
+  )), color = "gray10", linewidth = 0.1) +  # ZIP code areas and restaurant counts with hover data
+  geom_sf(data = pa_counties, fill = NA, color = "blue", linetype = "dashed", size = 0.5) +  
+  geom_sf_text(data = pa_counties, aes(label = NAME), size = 4, fontface = "bold", color = "#333333") +
   scale_fill_gradientn(
     colors = macaroon_palette, 
-    na.value = "grey90",  
+    na.value = "white",  
     name = "Restaurant Count"
   ) +
   coord_sf(
@@ -137,10 +155,16 @@ zipcode_heatmap <- ggplot(data = pa_zipcodes_restaurants) +
     expand = FALSE
   ) +
   theme_minimal() +
+  theme(panel.grid = element_blank()) + 
   labs(
     title = "Number of Restaurants by ZIP Code in Southeastern Pennsylvania",
     fill = "Restaurant Count"
   )
+
+# Convert to interactive plotly
+ggplotly(zipcode_heatmap, tooltip = "text")
+
+
 
 ```
 
@@ -184,21 +208,36 @@ filterPA %>%
   theme_minimal()
 
 # add color to the Density Contours
+# contimuous color scale
 filterPA %>%
   ggplot(aes(x = review_count, y = stars)) +
-  geom_density_2d(aes(fill = ..level..), color = "white") +
-  scale_fill_viridis_c() + 
+  stat_density_2d(
+    aes(fill = ..density..), geom = "raster", contour = FALSE
+  ) +  # Use raster for continuous density
+  geom_density_2d(color = "white") +  # Add contour lines
+  scale_fill_viridis_c() +  # Use a continuous color scale
   scale_x_log10() +  # Log-transform the x-axis
   labs(
-    title = "Density Contours of Review Count vs. Stars",
+    title = "Density Heatmap with Contours",
     x = "Review Count",
     y = "Stars",
     fill = "Density"
   ) +
   theme_minimal()
 
-
-
+#discrete color scale
+filterPA %>%
+  ggplot(aes(x = review_count, y = stars)) +
+  geom_density_2d_filled(aes(fill = ..level..)) +  # Filled density contours
+  scale_fill_viridis_d() +  # Use a discrete color scale
+  scale_x_log10() +  # Log-transform the x-axis
+  labs(
+    title = "Filled Density Contours of Review Count vs. Stars",
+    x = "Review Count",
+    y = "Stars",
+    fill = "Density"
+  ) +
+  theme_minimal()
 
 
 ```
