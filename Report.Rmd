@@ -9,6 +9,7 @@ output:
 ## **Data**
 ### **Source**
   The data for this project was obtained from [Yelp's Open Dataset](https://www.yelp.com/dataset) as JSON files which contain `150,346` stores including diverse types of shops and restaurants. Yelp provides detailed `58` variables on businesses, including restaurants, their locations, ratings, reviews, and various attributes like dog allows and price range. While the dataset does not include New York data, it provides comprehensive coverage of other regions, including PA.
+
 ### **Scraping Method**
   Initially, we planned to use the Yelp Fusion API to retrieve data, as it allows access to Yelp’s business information programmatically. However, the detailed datasets and larger limits we required were cost-prohibitive. Instead, we used the [Yelp's Open Dataset](https://www.yelp.com/dataset). While this dataset did not include New York data, we decided to focus on Southeastern Pennsylvania, a region with a large number of observations and close to where Angel’s friend lives.
 As we explored the data further, we found that it included 228 cities and townships. To enhance the analysis, we narrowed the scope to counties, merging the data with county information obtained from the [United States zip codes ](https://www.unitedstateszipcodes.org/pa/). This allowed us to provide a clearer geographic perspective.

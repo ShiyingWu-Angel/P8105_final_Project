@@ -28,6 +28,7 @@ county_counts <- mergedPA |>
   mutate(county = fct_reorder(county, count)) 
 
 county_counts |>
+  arrange(desc(count)) |>
   knitr::kable()
 
 plot_ly(
