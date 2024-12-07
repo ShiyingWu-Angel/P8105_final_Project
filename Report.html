@@ -13,7 +13,7 @@
 
 <title>Report</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
@@ -337,6 +337,9 @@ div.tocify {
   <a href="Stars.html">Rating Analyze</a>
 </li>
 <li>
+  <a href="https://yt4617.shinyapps.io/shiny_dashboard_template/">Get your customized restaurant</a>
+</li>
+<li>
   <a href="https://github.com/ShiyingWu-Angel/P8105_final_Project">
     <span class="fa fa-github fa-lg"></span>
      
@@ -364,6 +367,44 @@ div.tocify {
 </div>
 
 
+<div id="motivation" class="section level2">
+<h2><strong>Motivation</strong></h2>
+<p>The aim of our project is to explore the relationship between
+restaurant pricing and customer ratings, and its reflection on the food
+culture and economic diversity of the city. Understanding the
+correlation between restaurant pricing and customer ratings has become
+critical as consumers demand more in terms of dietary choices and
+quality of life. We plan to analyze regional restaurant data to reveal
+potential patterns between price ranges and customer ratings, thereby
+providing the restaurant industry with a reference point for optimizing
+pricing and service enhancement.</p>
+</div>
+<div id="related-work" class="section level2">
+<h2><strong>Related Work</strong></h2>
+<p>We are inspired by a large body of research on the relationship
+between consumer behavior and commercial pricing. For example, certain
+studies suggest that high pricing may imply high quality, but in
+practice, consumer ratings may focus more on service experience and
+dining quality than on price. These studies emphasize the importance of
+analyzing price in conjunction with reviews. By integrating data from
+platforms such as Yelp, our project attempts to systematically analyze
+the relationship between price ranges and ratings of restaurants in the
+region, further enriching research in this area.</p>
+</div>
+<div id="initial-questions" class="section level2">
+<h2><strong>Initial Questions</strong></h2>
+<p>The purpose of this project is to answer the following question:</p>
+<ul>
+<li><p>Is there a significant correlation between a restaurant’s price
+range and customer ratings?</p></li>
+<li><p>Can we reveal patterns in the cultural and economic diversity of
+urban food from price and rating datasets?</p></li>
+<li><p>Through visualization and interactive tools, how can we help
+users quickly understand the distribution of prices and ratings of
+restaurants in different areas and choose the most compatible
+restaurant?</p></li>
+</ul>
+</div>
 <div id="data" class="section level2">
 <h2><strong>Data</strong></h2>
 <div id="source" class="section level3">
@@ -431,6 +472,31 @@ and <code>latitude.</code></li>
 <code>Weekday/Weekend hours</code>, and <code>Total hours</code>.</li>
 </ul>
 </div>
+</div>
+<div id="r-shiny-app-to-choose-the-most-compatible-restaurant"
+class="section level2">
+<h2><strong>R shiny App to choose the most compatible
+restaurant</strong></h2>
+<p>We developed an R Shiny application to help users explore restaurants
+in Pennsylvania based on their preferences, including city, meal day,
+time range, category, price range, and stars. Users can interact with
+the app by selecting specific criteria to generate a tailored
+visualization of restaurant data. The app integrates various
+visualizations, including:</p>
+<ul>
+<li><p><strong>Map Visualization</strong>: Displays restaurant locations
+within the selected city. Color intensity reflects the number of
+reviews, allowing users to gauge popularity by geographic area.</p></li>
+<li><p><strong>Category Frequency</strong>: Shows the distribution of
+restaurant categories across the city, enabling users to identify
+popular cuisines.</p></li>
+<li><p><strong>Price and Rating Distribution</strong>: Highlights the
+relationship between price range and star ratings. Users can see the
+distribution of restaurants grouped by star ratings and price per
+person.</p></li>
+</ul>
+<p>Below is a screenshot to illustrate it.</p>
+<p><img src="picture/shinyapp.jpg" /></p>
 </div>
 
 
