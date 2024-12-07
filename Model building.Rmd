@@ -27,6 +27,8 @@ library(broom)
 load("data/PAhour.rdata")
 ```
 
+##Basic analysis##
+
 In the third question, after examining the relationship between price and ratings, we wanted to learn more about other factors that influence restaurant popularity. This time, instead of using only the number of reviews or the star rating, we combined them and assigned different weights to the “popularity_score”. We weighted the star rating down to 0.3 and the review count to 0.7, which reduces the impact of the problem we mentioned in Q1 that a low number of reviews can make the score inaccurate. another reason for the review count to be more weighted is that it reflects how many people are willing to go to the restaurant and leave a review, which is a much better indicator of the popularity of the restaurant than the star rating. This is a better indicator of a restaurant's popularity than star ratings. 
 
 ```{r}
@@ -38,6 +40,8 @@ filtered_data <- PAhour %>%
 filtered_data <- filtered_data %>%
   mutate(popularity_score = 0.3 * stars + 0.7 * review_count)
 ```
+
+##Model building and Selection##
 
 At the beginning, we built separate linear models for more than ten characters, one of which is shown in the figure below, and when we saw the results, we realized that it did not accurately reflect the relationship between popular score and character.
 
@@ -53,9 +57,13 @@ qqline(residuals(credit_card_popularity_model), col = "red")
 
 ```
 
+##Reflection and improvement##
+
 We considered the possibility that popular_score was heavily skewed (e.g., many values were very low and a few were very high), so we re-modeled using a logarithmic transformation, and this time we were much more satisfied with the results.
 
 After the creation of the new model we found that the following factors have a significant effect on the popularity of the restaurant: BusinessAcceptsCreditCards, Delivery, OutdoorSeating, Reservations, weekday business and weekend business. Upon further exploration, we found the fact that the effect of weekday business and weekend business on the popularity of a restaurant was significant but not relevant to our analysis. The prerequisite for a restaurant to be popular is that it is open for a long time, and people can't rate a restaurant that is not open, so we excluded the factor of business hours from our model.
+
+
 ```{r}
 filtered_data$weekday_hours <- as.numeric(filtered_data$Weekday_hours)
 filtered_data$weekend_hours <- as.numeric(filtered_data$Weekend_hours)
@@ -70,6 +78,8 @@ hours_popularity_model|>
   tidy() %>%
   knitr::kable(digits = 3)
 ```
+
+##FINAL MODEL##
 
 So this is our final model. There are some many characteristic will influence the popularity of the restaurants. As regional differences play a significant role in determining popular foods and restaurant characteristics. Tailoring offerings to local preferences and ensuring convenience-focused features like delivery and  provide reservation service for customer can positively impact restaurant popularity.
 
@@ -91,11 +101,6 @@ multiple_model <- lm(
   log(popularity_score + 1) ~ ByAppointmentOnly + BusinessAcceptsCreditCards +RestaurantsTakeOut+ Delivery + OutdoorSeating + Reservations,
   data = filtered_data
 )
-
-qqnorm(residuals(multiple_model), main = "QQ Plot of Residuals")
-qqline(residuals(multiple_model), col = "red")
-
-plot(multiple_model, which = 1, main = "Residuals vs Fitted")
 ```
 
 
@@ -103,5 +108,16 @@ plot(multiple_model, which = 1, main = "Residuals vs Fitted")
 multiple_model|>
   tidy() %>%
   knitr::kable(digits = 3)
+```
+
+##QQ Plot of Residuals##
+
+We can see from the qq plot that the model fit is not bad. 
+
+```{r}
+qqnorm(residuals(multiple_model), main = "QQ Plot of Residuals")
+qqline(residuals(multiple_model), col = "red")
+
+plot(multiple_model, which = 1, main = "Residuals vs Fitted")
 ```
 

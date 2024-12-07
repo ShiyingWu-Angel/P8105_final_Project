@@ -397,6 +397,7 @@ library(plotly)
 library(sf)
 library(broom)
 load(&quot;data/PAhour.rdata&quot;)</code></pre>
+<p>##Basic analysis##</p>
 <p>In the third question, after examining the relationship between price
 and ratings, we wanted to learn more about other factors that influence
 restaurant popularity. This time, instead of using only the number of
@@ -416,6 +417,7 @@ filtered_data &lt;- PAhour %&gt;%
   ungroup()
 filtered_data &lt;- filtered_data %&gt;%
   mutate(popularity_score = 0.3 * stars + 0.7 * review_count)</code></pre>
+<p>##Model building and Selection##</p>
 <p>At the beginning, we built separate linear models for more than ten
 characters, one of which is shown in the figure below, and when we saw
 the results, we realized that it did not accurately reflect the
@@ -447,6 +449,7 @@ summary(credit_card_popularity_model)</code></pre>
 <pre class="r"><code>qqnorm(residuals(credit_card_popularity_model), main = &quot;QQ Plot: Credit Card Popularity Model&quot;)
 qqline(residuals(credit_card_popularity_model), col = &quot;red&quot;)</code></pre>
 <p><img src="Model-building_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>##Reflection and improvement##</p>
 <p>We considered the possibility that popular_score was heavily skewed
 (e.g., many values were very low and a few were very high), so we
 re-modeled using a logarithmic transformation, and this time we were
@@ -524,6 +527,7 @@ qqline(residuals(hours_popularity_model), col = &quot;red&quot;)</code></pre>
 </tr>
 </tbody>
 </table>
+<p>##FINAL MODEL##</p>
 <p>So this is our final model. There are some many characteristic will
 influence the popularity of the restaurants. As regional differences
 play a significant role in determining popular foods and restaurant
@@ -546,13 +550,7 @@ filtered_data &lt;- filtered_data %&gt;%
 multiple_model &lt;- lm(
   log(popularity_score + 1) ~ ByAppointmentOnly + BusinessAcceptsCreditCards +RestaurantsTakeOut+ Delivery + OutdoorSeating + Reservations,
   data = filtered_data
-)
-
-qqnorm(residuals(multiple_model), main = &quot;QQ Plot of Residuals&quot;)
-qqline(residuals(multiple_model), col = &quot;red&quot;)</code></pre>
-<p><img src="Model-building_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<pre class="r"><code>plot(multiple_model, which = 1, main = &quot;Residuals vs Fitted&quot;)</code></pre>
-<p><img src="Model-building_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
+)</code></pre>
 <pre class="r"><code>multiple_model|&gt;
   tidy() %&gt;%
   knitr::kable(digits = 3)</code></pre>
@@ -618,6 +616,13 @@ qqline(residuals(multiple_model), col = &quot;red&quot;)</code></pre>
 </tr>
 </tbody>
 </table>
+<p>##QQ Plot of Residuals##</p>
+<p>We can see from the qq plot that the model fit is not bad.</p>
+<pre class="r"><code>qqnorm(residuals(multiple_model), main = &quot;QQ Plot of Residuals&quot;)
+qqline(residuals(multiple_model), col = &quot;red&quot;)</code></pre>
+<p><img src="Model-building_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>plot(multiple_model, which = 1, main = &quot;Residuals vs Fitted&quot;)</code></pre>
+<p><img src="Model-building_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
 
 
 
