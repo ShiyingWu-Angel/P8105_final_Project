@@ -79,7 +79,7 @@ ggplot() +
 ### Looking for some fantastic food?
 ### Looking for fancy places to eat for date?
 ### Looking for a match for special needs?
-**Try our [Shiny App](https://github.com/ShiyingWu-Angel/P8105_final_Project)**
+**Try our [App](https://yt4617.shinyapps.io/shiny_dashboard_template/) to get your ideal restaurant in PA !**
 
 ![](picture/looking.png)
 
