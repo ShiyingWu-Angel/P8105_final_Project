@@ -23,14 +23,41 @@ pa_counties <- counties(state = "PA", class = "sf") |>
 
 ---
 
+## Where to find fantastic eats?
 ![](picture/yelp-top-100-us-restaurants.jpeg)
-Photo from:  https://www.yelp.com/article/top-100-us-restaurants-2024/ 
+Photo from:  [Yelp](https://www.yelp.com/article/top-100-us-restaurants-2024/) 
 
 It is hard for anyone to find a good restaurant, no matter if they stay in the same place for a long time or just move in like us. When people do not know where to eat, rating apps such as yelp would be a key resource for people to use. However, it led to an interesting question to us: what factors could correlate with rates or stars. 
+
+## Restaurants Distribution
+Upon data analysis, we condensed the restaurants information across different locations and categories in the Pennsylvania from the **Yelp data** ([data source](Report.html)), analyzing the distribution of restaurants in the Pennsylvania.
+
+Read [Regional Analyzation](Regional.html) here.
+
+## Rating-Associated Factors
+We made an in-depth [Exploratory Analysis](Stars.html) about restaurant rating, and at last we identified the indicators of rating and constructed the model for predicting the restaurants ratings.
+
+
+## Match for Special Needs
+Try our [App](https://yt4617.shinyapps.io/shiny_dashboard_template/) to get your ideal restaurant in PA !
+
+
+## Report
+Browse our [report](Report.html) for key insights from our analysis!
+
+
+## Creators
+- Yutong Chen (yc4617)   
+- Tingcheng Pan (tp2859)    
+- Shiying Wu (sw3455)   
+- Yifan Xu (yx2857)
+
 
 ---
 
 ## Project Overview
+Click on the video below to learn more about the features of this site and enjoy a summary of our key highlights!
+
 <iframe width="560" height="315" 
         src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
         title="YouTube video player" 
@@ -78,8 +105,7 @@ ggplot() +
 
 ### Looking for some fantastic food?
 ### Looking for fancy places to eat for date?
-### Looking for a match for special needs?
-**Try our [App](https://yt4617.shinyapps.io/shiny_dashboard_template/) to get your ideal restaurant in PA !**
+
 
 ![](picture/looking.png)
 

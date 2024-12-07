@@ -13,7 +13,7 @@
 
 <title>Regional Analyze</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
@@ -345,6 +345,9 @@ div.tocify {
   <a href="Stars.html">Rating Analyze</a>
 </li>
 <li>
+  <a href="https://yt4617.shinyapps.io/shiny_dashboard_template/">Get your customized restaurant</a>
+</li>
+<li>
   <a href="https://github.com/ShiyingWu-Angel/P8105_final_Project">
     <span class="fa fa-github fa-lg"></span>
      
@@ -375,11 +378,12 @@ div.tocify {
 <hr />
 <p>The number of restaurant observations varies significantly across
 counties in Southeastern Pennsylvania, with Philadelphia leading at
-3,426 and Berks having only 22. This disparity highlights potential
-differences in population density, urbanization, or data representation
-in Yelp’s dataset. Such variation could influence future analyses,
-especially in identifying underserved areas or trends in restaurant
-quality and accessibility between urban and less-populated regions.</p>
+<strong>3,426</strong> and Berks having only <strong>22</strong>. This
+disparity highlights potential differences in population density,
+urbanization, or data representation in Yelp’s dataset. Such variation
+could influence future analyses, especially in identifying underserved
+areas or trends in restaurant quality and accessibility between urban
+and less-populated regions.</p>
 <pre class="r"><code>county_counts &lt;- mergedPA |&gt;
   group_by(county) |&gt;
   summarise(count = n(), .groups = &quot;drop&quot;) |&gt;
@@ -436,16 +440,17 @@ county_counts |&gt;
     yaxis = list(title = &quot;Count&quot;),
     showlegend = FALSE
   )</code></pre>
-<div class="plotly html-widget html-fill-item" id="htmlwidget-e681c3215dcc6fd5cbde" style="width:768px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-e681c3215dcc6fd5cbde">{"x":{"visdat":{"75493ffeba53":["function () ","plotlyVisDat"]},"cur_data":"75493ffeba53","attrs":{"75493ffeba53":{"x":{},"y":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Number of Entries by County","xaxis":{"domain":[0,1],"automargin":true,"title":"County","showticklabels":true,"type":"category","categoryorder":"array","categoryarray":["Berks","Chester","Delaware","Bucks","Montgomery","Philadelphia"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Count"},"showlegend":false,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["Berks"],"y":[22],"type":"bar","name":"Berks","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Chester"],"y":[697],"type":"bar","name":"Chester","marker":{"color":"rgba(65,68,135,1)","line":{"color":"rgba(65,68,135,1)"}},"textfont":{"color":"rgba(65,68,135,1)"},"error_y":{"color":"rgba(65,68,135,1)"},"error_x":{"color":"rgba(65,68,135,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Delaware"],"y":[995],"type":"bar","name":"Delaware","marker":{"color":"rgba(42,120,142,1)","line":{"color":"rgba(42,120,142,1)"}},"textfont":{"color":"rgba(42,120,142,1)"},"error_y":{"color":"rgba(42,120,142,1)"},"error_x":{"color":"rgba(42,120,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bucks"],"y":[1055],"type":"bar","name":"Bucks","marker":{"color":"rgba(34,168,132,1)","line":{"color":"rgba(34,168,132,1)"}},"textfont":{"color":"rgba(34,168,132,1)"},"error_y":{"color":"rgba(34,168,132,1)"},"error_x":{"color":"rgba(34,168,132,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Montgomery"],"y":[1606],"type":"bar","name":"Montgomery","marker":{"color":"rgba(122,209,81,1)","line":{"color":"rgba(122,209,81,1)"}},"textfont":{"color":"rgba(122,209,81,1)"},"error_y":{"color":"rgba(122,209,81,1)"},"error_x":{"color":"rgba(122,209,81,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Philadelphia"],"y":[3426],"type":"bar","name":"Philadelphia","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-96470f15bb390c976034" style="width:768px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-96470f15bb390c976034">{"x":{"visdat":{"eb7461e22e5b":["function () ","plotlyVisDat"]},"cur_data":"eb7461e22e5b","attrs":{"eb7461e22e5b":{"x":{},"y":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Number of Entries by County","xaxis":{"domain":[0,1],"automargin":true,"title":"County","showticklabels":true,"type":"category","categoryorder":"array","categoryarray":["Berks","Chester","Delaware","Bucks","Montgomery","Philadelphia"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Count"},"showlegend":false,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["Berks"],"y":[22],"type":"bar","name":"Berks","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Chester"],"y":[697],"type":"bar","name":"Chester","marker":{"color":"rgba(65,68,135,1)","line":{"color":"rgba(65,68,135,1)"}},"textfont":{"color":"rgba(65,68,135,1)"},"error_y":{"color":"rgba(65,68,135,1)"},"error_x":{"color":"rgba(65,68,135,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Delaware"],"y":[995],"type":"bar","name":"Delaware","marker":{"color":"rgba(42,120,142,1)","line":{"color":"rgba(42,120,142,1)"}},"textfont":{"color":"rgba(42,120,142,1)"},"error_y":{"color":"rgba(42,120,142,1)"},"error_x":{"color":"rgba(42,120,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bucks"],"y":[1055],"type":"bar","name":"Bucks","marker":{"color":"rgba(34,168,132,1)","line":{"color":"rgba(34,168,132,1)"}},"textfont":{"color":"rgba(34,168,132,1)"},"error_y":{"color":"rgba(34,168,132,1)"},"error_x":{"color":"rgba(34,168,132,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Montgomery"],"y":[1606],"type":"bar","name":"Montgomery","marker":{"color":"rgba(122,209,81,1)","line":{"color":"rgba(122,209,81,1)"}},"textfont":{"color":"rgba(122,209,81,1)"},"error_y":{"color":"rgba(122,209,81,1)"},"error_x":{"color":"rgba(122,209,81,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Philadelphia"],"y":[3426],"type":"bar","name":"Philadelphia","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 <p>The average ratings of restaurants by county in Southeastern
-Pennsylvania reveal an interesting trend. Berks County, despite having
-the fewest restaurant observations, boasts the highest average rating.
-This might be attributed to the limited number of observations, as
-previously mentioned. In contrast, the other counties, each with
-hundreds of restaurants, exhibit more stable average ratings. Among
-these, Philadelphia stands out with the highest average score,
-reflecting its diverse and competitive restaurant scene.</p>
+Pennsylvania reveal an interesting trend. <strong>Berks</strong> County,
+despite having the fewest restaurant observations, boasts the highest
+average rating. This might be attributed to the limited number of
+observations, as previously mentioned. In contrast, the other counties,
+each with hundreds of restaurants, exhibit more stable average ratings.
+Among these, <strong>Philadelphia</strong> stands out with the highest
+average score, reflecting its diverse and competitive restaurant
+scene.</p>
 <pre class="r"><code>avg_stars &lt;- mergedPA |&gt;
   group_by(county) |&gt;
   summarise(avg_stars = mean(stars, na.rm = TRUE), .groups = &quot;drop&quot;) |&gt;
@@ -466,18 +471,18 @@ plot_ly(
     yaxis = list(title = &quot;Average Stars&quot;, range = c(3, 4)),
     showlegend = FALSE
   )</code></pre>
-<div class="plotly html-widget html-fill-item" id="htmlwidget-33e381c4a79d913bdd37" style="width:768px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-33e381c4a79d913bdd37">{"x":{"visdat":{"754965cb94b2":["function () ","plotlyVisDat"]},"cur_data":"754965cb94b2","attrs":{"754965cb94b2":{"x":{},"y":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Average Ratings by County","xaxis":{"domain":[0,1],"automargin":true,"title":"County","showticklabels":true,"type":"category","categoryorder":"array","categoryarray":["Delaware","Bucks","Montgomery","Chester","Philadelphia","Berks"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Average Stars","range":[3,4]},"showlegend":false,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["Delaware"],"y":[3.5271356783919594],"type":"bar","name":"Delaware","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bucks"],"y":[3.5426540284360191],"type":"bar","name":"Bucks","marker":{"color":"rgba(65,68,135,1)","line":{"color":"rgba(65,68,135,1)"}},"textfont":{"color":"rgba(65,68,135,1)"},"error_y":{"color":"rgba(65,68,135,1)"},"error_x":{"color":"rgba(65,68,135,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Montgomery"],"y":[3.5560398505603983],"type":"bar","name":"Montgomery","marker":{"color":"rgba(42,120,142,1)","line":{"color":"rgba(42,120,142,1)"}},"textfont":{"color":"rgba(42,120,142,1)"},"error_y":{"color":"rgba(42,120,142,1)"},"error_x":{"color":"rgba(42,120,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Chester"],"y":[3.5624103299856529],"type":"bar","name":"Chester","marker":{"color":"rgba(34,168,132,1)","line":{"color":"rgba(34,168,132,1)"}},"textfont":{"color":"rgba(34,168,132,1)"},"error_y":{"color":"rgba(34,168,132,1)"},"error_x":{"color":"rgba(34,168,132,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Philadelphia"],"y":[3.5881494454173972],"type":"bar","name":"Philadelphia","marker":{"color":"rgba(122,209,81,1)","line":{"color":"rgba(122,209,81,1)"}},"textfont":{"color":"rgba(122,209,81,1)"},"error_y":{"color":"rgba(122,209,81,1)"},"error_x":{"color":"rgba(122,209,81,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Berks"],"y":[3.8863636363636362],"type":"bar","name":"Berks","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-788f9c885a29e5472698" style="width:768px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-788f9c885a29e5472698">{"x":{"visdat":{"eb747ce18773":["function () ","plotlyVisDat"]},"cur_data":"eb747ce18773","attrs":{"eb747ce18773":{"x":{},"y":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Average Ratings by County","xaxis":{"domain":[0,1],"automargin":true,"title":"County","showticklabels":true,"type":"category","categoryorder":"array","categoryarray":["Delaware","Bucks","Montgomery","Chester","Philadelphia","Berks"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Average Stars","range":[3,4]},"showlegend":false,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["Delaware"],"y":[3.5271356783919594],"type":"bar","name":"Delaware","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bucks"],"y":[3.5426540284360191],"type":"bar","name":"Bucks","marker":{"color":"rgba(65,68,135,1)","line":{"color":"rgba(65,68,135,1)"}},"textfont":{"color":"rgba(65,68,135,1)"},"error_y":{"color":"rgba(65,68,135,1)"},"error_x":{"color":"rgba(65,68,135,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Montgomery"],"y":[3.5560398505603983],"type":"bar","name":"Montgomery","marker":{"color":"rgba(42,120,142,1)","line":{"color":"rgba(42,120,142,1)"}},"textfont":{"color":"rgba(42,120,142,1)"},"error_y":{"color":"rgba(42,120,142,1)"},"error_x":{"color":"rgba(42,120,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Chester"],"y":[3.5624103299856529],"type":"bar","name":"Chester","marker":{"color":"rgba(34,168,132,1)","line":{"color":"rgba(34,168,132,1)"}},"textfont":{"color":"rgba(34,168,132,1)"},"error_y":{"color":"rgba(34,168,132,1)"},"error_x":{"color":"rgba(34,168,132,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Philadelphia"],"y":[3.5881494454173972],"type":"bar","name":"Philadelphia","marker":{"color":"rgba(122,209,81,1)","line":{"color":"rgba(122,209,81,1)"}},"textfont":{"color":"rgba(122,209,81,1)"},"error_y":{"color":"rgba(122,209,81,1)"},"error_x":{"color":"rgba(122,209,81,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Berks"],"y":[3.8863636363636362],"type":"bar","name":"Berks","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 <p>Based on Top 10 restaurant tags across counties in Southeastern
-Pennsylvania, Pizza and Sandwiches dominate as the most popular
-restaurant types, with Philadelphia significantly contributing to their
-high counts. American (Traditional) and Breakfast &amp; Brunch also
-feature prominently, reflecting common preferences in the region.
-Interestingly, while counties like Philadelphia and Montgomery
-contribute the most to these tags, smaller counties like Berks have
-minimal representation across all tags. This stacked visualization
-provides insight into both the diversity and distribution of restaurant
-types across counties.</p>
+Pennsylvania, <strong>Pizza and Sandwiches</strong> dominate as the most
+popular restaurant types, with Philadelphia significantly contributing
+to their high counts. <strong>American (Traditional) and Breakfast &amp;
+Brunch</strong> also feature prominently, reflecting common preferences
+in the region. Interestingly, while counties like <strong>Philadelphia
+and Montgomery</strong> contribute the most to these tags, smaller
+counties like <strong>Berks</strong> have minimal representation across
+all tags. This stacked visualization provides insight into both the
+diversity and distribution of restaurant types across counties.</p>
 <pre class="r"><code>stacked_data &lt;- mergedPA |&gt;
   separate_rows(categories, sep = &quot;,\\s*&quot;) |&gt; 
   group_by(categories, county) |&gt;
@@ -510,8 +515,114 @@ plot_ly(
     yaxis = list(title = &quot;Count&quot;),
     barmode = &quot;stack&quot;
   )</code></pre>
-<div class="plotly html-widget html-fill-item" id="htmlwidget-263d73d294644ecf8655" style="width:768px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-263d73d294644ecf8655">{"x":{"visdat":{"754969a164ec":["function () ","plotlyVisDat"]},"cur_data":"754969a164ec","attrs":{"754969a164ec":{"x":{},"y":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Top 10 Restaurant Tags by County","xaxis":{"domain":[0,1],"automargin":true,"title":"Restaurant Tag","tickangle":45,"type":"category","categoryorder":"array","categoryarray":["Pizza","Sandwiches","American (Traditional)","Breakfast & Brunch","Italian","American (New)","Burgers","Fast Food","Chinese","Seafood"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Count"},"barmode":"stack","hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["American (New)","American (Traditional)","Breakfast & Brunch","Burgers","Chinese","Italian","Pizza","Sandwiches","Seafood"],"y":[3,3,4,1,2,6,7,4,2],"type":"bar","name":"Berks","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["American (New)","American (Traditional)","Breakfast & Brunch","Burgers","Chinese","Fast Food","Italian","Pizza","Sandwiches","Seafood"],"y":[118,181,130,107,78,104,156,270,218,65],"type":"bar","name":"Bucks","marker":{"color":"rgba(65,68,135,1)","line":{"color":"rgba(65,68,135,1)"}},"textfont":{"color":"rgba(65,68,135,1)"},"error_y":{"color":"rgba(65,68,135,1)"},"error_x":{"color":"rgba(65,68,135,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["American (New)","American (Traditional)","Breakfast & Brunch","Burgers","Chinese","Fast Food","Italian","Pizza","Sandwiches","Seafood"],"y":[87,119,86,65,45,70,96,144,135,39],"type":"bar","name":"Chester","marker":{"color":"rgba(42,120,142,1)","line":{"color":"rgba(42,120,142,1)"}},"textfont":{"color":"rgba(42,120,142,1)"},"error_y":{"color":"rgba(42,120,142,1)"},"error_x":{"color":"rgba(42,120,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["American (New)","American (Traditional)","Breakfast & Brunch","Burgers","Chinese","Fast Food","Italian","Pizza","Sandwiches","Seafood"],"y":[89,177,117,103,80,93,129,230,234,70],"type":"bar","name":"Delaware","marker":{"color":"rgba(34,168,132,1)","line":{"color":"rgba(34,168,132,1)"}},"textfont":{"color":"rgba(34,168,132,1)"},"error_y":{"color":"rgba(34,168,132,1)"},"error_x":{"color":"rgba(34,168,132,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["American (New)","American (Traditional)","Breakfast & Brunch","Burgers","Chinese","Fast Food","Italian","Pizza","Sandwiches","Seafood"],"y":[171,282,174,174,123,164,241,320,303,105],"type":"bar","name":"Montgomery","marker":{"color":"rgba(122,209,81,1)","line":{"color":"rgba(122,209,81,1)"}},"textfont":{"color":"rgba(122,209,81,1)"},"error_y":{"color":"rgba(122,209,81,1)"},"error_x":{"color":"rgba(122,209,81,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["American (New)","American (Traditional)","Breakfast & Brunch","Burgers","Chinese","Fast Food","Italian","Pizza","Sandwiches","Seafood"],"y":[374,434,416,250,301,260,281,532,580,240],"type":"bar","name":"Philadelphia","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-ab2c99d4693c593daaee" style="width:768px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-ab2c99d4693c593daaee">{"x":{"visdat":{"eb7433be6d24":["function () ","plotlyVisDat"]},"cur_data":"eb7433be6d24","attrs":{"eb7433be6d24":{"x":{},"y":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Top 10 Restaurant Tags by County","xaxis":{"domain":[0,1],"automargin":true,"title":"Restaurant Tag","tickangle":45,"type":"category","categoryorder":"array","categoryarray":["Pizza","Sandwiches","American (Traditional)","Breakfast & Brunch","Italian","American (New)","Burgers","Fast Food","Chinese","Seafood"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Count"},"barmode":"stack","hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["American (New)","American (Traditional)","Breakfast & Brunch","Burgers","Chinese","Italian","Pizza","Sandwiches","Seafood"],"y":[3,3,4,1,2,6,7,4,2],"type":"bar","name":"Berks","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["American (New)","American (Traditional)","Breakfast & Brunch","Burgers","Chinese","Fast Food","Italian","Pizza","Sandwiches","Seafood"],"y":[118,181,130,107,78,104,156,270,218,65],"type":"bar","name":"Bucks","marker":{"color":"rgba(65,68,135,1)","line":{"color":"rgba(65,68,135,1)"}},"textfont":{"color":"rgba(65,68,135,1)"},"error_y":{"color":"rgba(65,68,135,1)"},"error_x":{"color":"rgba(65,68,135,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["American (New)","American (Traditional)","Breakfast & Brunch","Burgers","Chinese","Fast Food","Italian","Pizza","Sandwiches","Seafood"],"y":[87,119,86,65,45,70,96,144,135,39],"type":"bar","name":"Chester","marker":{"color":"rgba(42,120,142,1)","line":{"color":"rgba(42,120,142,1)"}},"textfont":{"color":"rgba(42,120,142,1)"},"error_y":{"color":"rgba(42,120,142,1)"},"error_x":{"color":"rgba(42,120,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["American (New)","American (Traditional)","Breakfast & Brunch","Burgers","Chinese","Fast Food","Italian","Pizza","Sandwiches","Seafood"],"y":[89,177,117,103,80,93,129,230,234,70],"type":"bar","name":"Delaware","marker":{"color":"rgba(34,168,132,1)","line":{"color":"rgba(34,168,132,1)"}},"textfont":{"color":"rgba(34,168,132,1)"},"error_y":{"color":"rgba(34,168,132,1)"},"error_x":{"color":"rgba(34,168,132,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["American (New)","American (Traditional)","Breakfast & Brunch","Burgers","Chinese","Fast Food","Italian","Pizza","Sandwiches","Seafood"],"y":[171,282,174,174,123,164,241,320,303,105],"type":"bar","name":"Montgomery","marker":{"color":"rgba(122,209,81,1)","line":{"color":"rgba(122,209,81,1)"}},"textfont":{"color":"rgba(122,209,81,1)"},"error_y":{"color":"rgba(122,209,81,1)"},"error_x":{"color":"rgba(122,209,81,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["American (New)","American (Traditional)","Breakfast & Brunch","Burgers","Chinese","Fast Food","Italian","Pizza","Sandwiches","Seafood"],"y":[374,434,416,250,301,260,281,532,580,240],"type":"bar","name":"Philadelphia","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>The price range was calculated as the difference between the minimum
+and maximum prices for restaurants in each county, with a standardized
+cap of 200 units applied due to the absence of explicit maximum price
+data. The results show that counties like <strong>Philadelphia and
+Montgomery</strong> have the widest price ranges, reflecting diverse
+dining options, while <strong>Berks</strong> has the smallest range,
+indicating less variation in pricing. This analysis highlights the
+disparity in restaurant affordability and variety across regions,
+providing insights into the economic and culinary diversity of these
+counties.</p>
+<pre class="r"><code>library(jsonlite)
+clean_and_format_parking &lt;- function(parking) {
+  if (is.na(parking)) return(&quot;No parking info available&quot;)
+
+  parking &lt;- gsub(&quot;&#39;&quot;, &quot;\&quot;&quot;, parking)
+  
+  parking &lt;- gsub(&quot;u\&quot;&quot;, &quot;\&quot;&quot;, parking)
+  
+  parking &lt;- gsub(&quot;False&quot;, &quot;false&quot;, gsub(&quot;True&quot;, &quot;true&quot;, gsub(&quot;None&quot;, &quot;null&quot;, parking)))
+
+  parking_list &lt;- tryCatch(fromJSON(parking), error = function(e) {
+    message(&quot;Parsing error:&quot;, e$message)
+    return(NULL)
+  })
+
+  if (is.null(parking_list)) return(&quot;Invalid parking data&quot;)
+
+  readable &lt;- paste0(
+    names(parking_list), &quot;: &quot;, ifelse(unlist(parking_list), &quot;Yes&quot;, &quot;No&quot;), collapse = &quot;, &quot;
+  )
+  
+  return(readable)
+}
+
+clean &lt;- function(attire) {
+  if (is.na(attire)) return(NA) # Handle NA values
+  attire &lt;- gsub(&quot;u&#39;&quot;, &quot;&quot;, attire) # Remove the u&#39; prefix
+  attire &lt;- gsub(&quot;&#39;&quot;, &quot;&quot;, attire) # Remove single quotes
+  return(attire)
+}
+
+
+filterPA = filterPA |&gt; 
+  left_join(county, by = &quot;city&quot;)|&gt;
+  unnest_wider(attributes)|&gt;
+  unnest_wider(hours)|&gt;
+  mutate(RestaurantsPriceRange2 = 
+           case_match(RestaurantsPriceRange2,
+                      &quot;1&quot; ~ &quot;0-10&quot;,
+                      &quot;2&quot; ~ &quot;11-30&quot;,
+                      &quot;3&quot; ~ &quot;31-60&quot;,
+                      &quot;4&quot; ~ &quot;61-200&quot;))|&gt;
+  pivot_longer(
+    cols = Monday:Sunday,
+    names_to = &quot;day&quot;,
+    values_to = &quot;hour&quot;
+  )|&gt;
+  filter(!is.na(hour))|&gt;  
+  separate(hour, into = c(&quot;start_time&quot;, &quot;end_time&quot;), sep = &quot;-&quot;)|&gt;
+  mutate(
+    start_time = as.numeric(substr(start_time, 1, 2)) + as.numeric(substr(start_time, 4, 5)) / 60,
+    end_time = as.numeric(substr(end_time, 1, 2)) + as.numeric(substr(end_time, 4, 5)) / 60
+  )|&gt;
+  separate(categories, into = c(&quot;categories&quot;, &quot;other_categories&quot;), sep = &quot;,&quot;, extra = &quot;drop&quot;)|&gt;
+  mutate(WiFi = gsub(&quot;.*&#39;(.*?)&#39;.*&quot;, &quot;\\1&quot;, WiFi),
+         BusinessParking = sapply(BusinessParking,clean_and_format_parking),
+         across(everything(), ~ ifelse(is.na(.), &quot;No info&quot;, .)),
+         NoiseLevel = sapply(NoiseLevel,clean),
+         RestaurantsAttire = sapply(RestaurantsAttire,clean),
+         Alcohol = sapply(Alcohol,clean),
+         name = gsub(&quot;^[^a-zA-Z0-9]+&quot;, &quot;&quot;, name)
+  )
+
+plot_data &lt;- filterPA |&gt;
+  filter(RestaurantsPriceRange2 != &quot;No info&quot;) |&gt;  # Exclude &quot;No info&quot;
+  filter(county != &quot;No info&quot;) |&gt;  # Exclude &quot;No info&quot;
+  separate(RestaurantsPriceRange2, into = c(&quot;min_price&quot;, &quot;max_price&quot;), sep = &quot;-&quot;) |&gt;
+  group_by(county) |&gt;
+  summarize(
+    max_price = max(as.numeric(max_price), na.rm = TRUE),
+    min_price = min(as.numeric(min_price), na.rm = TRUE),
+    price_range = max_price - min_price
+  ) |&gt;
+  arrange(desc(price_range))
+
+# Create a plotly bar chart
+plot_ly(
+  data = plot_data,
+  x = ~reorder(county, price_range),
+  y = ~price_range,
+  type = &#39;bar&#39;,
+  color = ~county,
+  colors = &quot;viridis&quot;
+) |&gt;
+  layout(
+    title = &quot;Price Range by County&quot;,
+    xaxis = list(
+      title = &quot;County&quot;
+    ),
+    yaxis = list(
+      title = &quot;Price Range&quot;
+    ),
+    showlegend = FALSE
+  )</code></pre>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-cdf4d03ad28da9e1cc60" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-cdf4d03ad28da9e1cc60">{"x":{"visdat":{"eb747993c57e":["function () ","plotlyVisDat"]},"cur_data":"eb747993c57e","attrs":{"eb747993c57e":{"x":{},"y":{},"color":{},"colors":"viridis","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Price Range by County","xaxis":{"domain":[0,1],"automargin":true,"title":"County","type":"category","categoryorder":"array","categoryarray":["Berks","Bucks","Chester","Delaware","Montgomery","Philadelphia"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Price Range"},"showlegend":false,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["Berks"],"y":[60],"type":"bar","name":"Berks","marker":{"color":"rgba(68,1,84,1)","line":{"color":"rgba(68,1,84,1)"}},"textfont":{"color":"rgba(68,1,84,1)"},"error_y":{"color":"rgba(68,1,84,1)"},"error_x":{"color":"rgba(68,1,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Bucks"],"y":[200],"type":"bar","name":"Bucks","marker":{"color":"rgba(65,68,135,1)","line":{"color":"rgba(65,68,135,1)"}},"textfont":{"color":"rgba(65,68,135,1)"},"error_y":{"color":"rgba(65,68,135,1)"},"error_x":{"color":"rgba(65,68,135,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Chester"],"y":[200],"type":"bar","name":"Chester","marker":{"color":"rgba(42,120,142,1)","line":{"color":"rgba(42,120,142,1)"}},"textfont":{"color":"rgba(42,120,142,1)"},"error_y":{"color":"rgba(42,120,142,1)"},"error_x":{"color":"rgba(42,120,142,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Delaware"],"y":[200],"type":"bar","name":"Delaware","marker":{"color":"rgba(34,168,132,1)","line":{"color":"rgba(34,168,132,1)"}},"textfont":{"color":"rgba(34,168,132,1)"},"error_y":{"color":"rgba(34,168,132,1)"},"error_x":{"color":"rgba(34,168,132,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Montgomery"],"y":[200],"type":"bar","name":"Montgomery","marker":{"color":"rgba(122,209,81,1)","line":{"color":"rgba(122,209,81,1)"}},"textfont":{"color":"rgba(122,209,81,1)"},"error_y":{"color":"rgba(122,209,81,1)"},"error_x":{"color":"rgba(122,209,81,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Philadelphia"],"y":[200],"type":"bar","name":"Philadelphia","marker":{"color":"rgba(253,231,37,1)","line":{"color":"rgba(253,231,37,1)"}},"textfont":{"color":"rgba(253,231,37,1)"},"error_y":{"color":"rgba(253,231,37,1)"},"error_x":{"color":"rgba(253,231,37,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 
 
 
