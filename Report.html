@@ -11,9 +11,9 @@
 
 
 
-<title>Report</title>
+<title>Model Building</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
@@ -337,9 +337,6 @@ div.tocify {
   <a href="Stars.html">Rating Analyze</a>
 </li>
 <li>
-  <a href="Model-building.html">Model Build</a>
-</li>
-<li>
   <a href="https://yt4617.shinyapps.io/shiny_dashboard_template/">Get your customized restaurant</a>
 </li>
 <li>
@@ -387,7 +384,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Report</h1>
+<h1 class="title toc-ignore">Model Building</h1>
 
 </div>
 
@@ -496,6 +493,242 @@ and <code>latitude.</code></li>
 <li><strong>Hours of Operation</strong>: <code>Everyday Hours</code>,
 <code>Weekday/Weekend hours</code>, and <code>Total hours</code>.</li>
 </ul>
+<pre class="r"><code>library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(janitor)
+library(plotly)
+library(sf)
+library(broom)
+load(&quot;data/PAhour.rdata&quot;)</code></pre>
+</div>
+<div id="basic-analysis" class="section level3">
+<h3><strong>Basic analysis</strong></h3>
+<p>In the third question, after examining the relationship between price
+and ratings, we wanted to learn more about other factors that influence
+restaurant popularity. This time, instead of using only the number of
+reviews or the star rating, we combined them and assigned different
+weights to the “popularity_score”. We weighted the star rating down to
+0.3 and the review count to 0.7, which reduces the impact of the problem
+we mentioned in Q1 that a low number of reviews can make the score
+inaccurate. another reason for the review count to be more weighted is
+that it reflects how many people are willing to go to the restaurant and
+leave a review, which is a much better indicator of the popularity of
+the restaurant than the star rating. This is a better indicator of a
+restaurant’s popularity than star ratings.</p>
+<pre class="r"><code>min_restaurants &lt;- 5
+filtered_data &lt;- PAhour %&gt;%
+  group_by(city) %&gt;%
+  filter(n() &gt;= min_restaurants) %&gt;%
+  ungroup()
+filtered_data &lt;- filtered_data %&gt;%
+  mutate(popularity_score = 0.3 * stars + 0.7 * review_count)</code></pre>
+</div>
+<div id="model-building-and-selection" class="section level3">
+<h3><strong>Model building and Selection</strong></h3>
+<p>At the beginning, we built separate linear models for more than ten
+characters, one of which is shown in the figure below, and when we saw
+the results, we realized that it did not accurately reflect the
+relationship between popular score and character.</p>
+<pre class="r"><code>filtered_data$attributes$BusinessAcceptsCreditCards &lt;- tolower(filtered_data$attributes$BusinessAcceptsCreditCards)
+filtered_data$accepts_credit_cards &lt;- ifelse(filtered_data$attributes$BusinessAcceptsCreditCards == &quot;true&quot;, 1, 0)
+
+credit_card_popularity_model &lt;- lm(popularity_score ~ accepts_credit_cards, data = filtered_data)
+
+credit_card_popularity_model|&gt;
+  tidy() %&gt;%
+  knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">96.400</td>
+<td align="right">7.485</td>
+<td align="right">12.879</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">accepts_credit_cards</td>
+<td align="right">-17.351</td>
+<td align="right">7.734</td>
+<td align="right">-2.244</td>
+<td align="right">0.025</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>qqnorm(residuals(credit_card_popularity_model), main = &quot;QQ Plot: Credit Card Popularity Model&quot;)
+qqline(residuals(credit_card_popularity_model), col = &quot;red&quot;)</code></pre>
+<p><img src="Report_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+</div>
+<div id="reflection-and-improvement" class="section level3">
+<h3><strong>Reflection and improvement</strong></h3>
+<p>We considered the possibility that popular_score was heavily skewed
+(e.g., many values were very low and a few were very high), so we
+re-modeled using a logarithmic transformation, and this time we were
+much more satisfied with the results.</p>
+<p>After the creation of the new model we found that the following
+factors have a significant effect on the popularity of the restaurant:
+BusinessAcceptsCreditCards, Delivery, OutdoorSeating, Reservations,
+weekday business and weekend business. Upon further exploration, we
+found the fact that the effect of weekday business and weekend business
+on the popularity of a restaurant was significant but not relevant to
+our analysis. The prerequisite for a restaurant to be popular is that it
+is open for a long time, and people can’t rate a restaurant that is not
+open, so we excluded the factor of business hours from our model.</p>
+<pre class="r"><code>filtered_data$weekday_hours &lt;- as.numeric(filtered_data$Weekday_hours)
+filtered_data$weekend_hours &lt;- as.numeric(filtered_data$Weekend_hours)
+hours_popularity_model &lt;- lm(log(popularity_score+1) ~ weekday_hours + weekend_hours, data = filtered_data)
+
+
+qqnorm(residuals(hours_popularity_model), main = &quot;QQ Plot: Hours Popularity Model&quot;)
+qqline(residuals(hours_popularity_model), col = &quot;red&quot;)</code></pre>
+<p><img src="Report_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>hours_popularity_model|&gt;
+  tidy() %&gt;%
+  knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">3.312</td>
+<td align="right">0.027</td>
+<td align="right">123.542</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">weekday_hours</td>
+<td align="right">-0.015</td>
+<td align="right">0.001</td>
+<td align="right">-13.119</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">weekend_hours</td>
+<td align="right">0.050</td>
+<td align="right">0.003</td>
+<td align="right">18.402</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="final-model" class="section level3">
+<h3><strong>FINAL MODEL</strong></h3>
+<p>So this is our final model. There are some many characteristic will
+influence the popularity of the restaurants. As regional differences
+play a significant role in determining popular foods and restaurant
+characteristics. Tailoring offerings to local preferences and ensuring
+convenience-focused features like delivery and provide reservation
+service for customer can positively impact restaurant popularity.</p>
+<pre class="r"><code>filtered_data$attributes$RestaurantsTakeOut &lt;- tolower(filtered_data$attributes$RestaurantsTakeOut)
+filtered_data &lt;- filtered_data %&gt;%
+  mutate(
+    ByAppointmentOnly = ifelse(tolower(attributes$ByAppointmentOnly) == &quot;true&quot;, 1, 0),
+    BusinessAcceptsCreditCards = ifelse(tolower(attributes$BusinessAcceptsCreditCards) == &quot;true&quot;, 1, 0),
+    Delivery = ifelse(tolower(attributes$RestaurantsDelivery) == &quot;true&quot;, 1, 0),
+    BusinessParking = ifelse(!is.na(attributes$BusinessParking) != &quot;none&quot;, 1, 0),
+    OutdoorSeating = ifelse(tolower(attributes$OutdoorSeating) == &quot;true&quot;, 1, 0),
+    Reservations = ifelse(tolower(attributes$RestaurantsReservations) == &quot;true&quot;, 1, 0),
+    WheelchairAccessible  = ifelse(filtered_data$attributes$WheelchairAccessible == &quot;true&quot;, 1, 0),
+    RestaurantsTakeOut  = ifelse(filtered_data$attributes$RestaurantsTakeOut == &quot;true&quot;, 1, 0),
+  )
+# Fit the multiple linear regression model
+multiple_model &lt;- lm(
+  log(popularity_score + 1) ~ ByAppointmentOnly + BusinessAcceptsCreditCards +RestaurantsTakeOut+ Delivery + OutdoorSeating + Reservations,
+  data = filtered_data
+)</code></pre>
+<pre class="r"><code>multiple_model|&gt;
+  tidy() %&gt;%
+  knitr::kable(digits = 3)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">term</th>
+<th align="right">estimate</th>
+<th align="right">std.error</th>
+<th align="right">statistic</th>
+<th align="right">p.value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">(Intercept)</td>
+<td align="right">5.218</td>
+<td align="right">0.338</td>
+<td align="right">15.422</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">ByAppointmentOnly</td>
+<td align="right">0.346</td>
+<td align="right">0.264</td>
+<td align="right">1.310</td>
+<td align="right">0.191</td>
+</tr>
+<tr class="odd">
+<td align="left">BusinessAcceptsCreditCards</td>
+<td align="right">-0.947</td>
+<td align="right">0.280</td>
+<td align="right">-3.378</td>
+<td align="right">0.001</td>
+</tr>
+<tr class="even">
+<td align="left">RestaurantsTakeOut</td>
+<td align="right">-0.288</td>
+<td align="right">0.210</td>
+<td align="right">-1.370</td>
+<td align="right">0.171</td>
+</tr>
+<tr class="odd">
+<td align="left">Delivery</td>
+<td align="right">0.310</td>
+<td align="right">0.120</td>
+<td align="right">2.589</td>
+<td align="right">0.010</td>
+</tr>
+<tr class="even">
+<td align="left">OutdoorSeating</td>
+<td align="right">0.446</td>
+<td align="right">0.103</td>
+<td align="right">4.334</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="odd">
+<td align="left">Reservations</td>
+<td align="right">0.256</td>
+<td align="right">0.103</td>
+<td align="right">2.482</td>
+<td align="right">0.013</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="qq-plot-of-residuals" class="section level3">
+<h3><strong>QQ Plot of Residuals</strong></h3>
+<p>We can see from the qq plot that the model fit is not bad.</p>
+<pre class="r"><code>qqnorm(residuals(multiple_model), main = &quot;QQ Plot of Residuals&quot;)
+qqline(residuals(multiple_model), col = &quot;red&quot;)</code></pre>
+<p><img src="Report_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>plot(multiple_model, which = 1, main = &quot;Residuals vs Fitted&quot;)</code></pre>
+<p><img src="Report_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
 </div>
 </div>
 <div id="r-shiny-app-to-choose-the-most-compatible-restaurant"

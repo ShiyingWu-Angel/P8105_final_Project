@@ -337,9 +337,6 @@ div.tocify {
   <a href="Stars.html">Rating Analyze</a>
 </li>
 <li>
-  <a href="Model-building.html">Model Build</a>
-</li>
-<li>
   <a href="https://yt4617.shinyapps.io/shiny_dashboard_template/">Get your customized restaurant</a>
 </li>
 <li>
@@ -400,7 +397,8 @@ library(plotly)
 library(sf)
 library(broom)
 load(&quot;data/PAhour.rdata&quot;)</code></pre>
-<p><strong>Basic analysis</strong></p>
+<div id="basic-analysis" class="section level3">
+<h3><strong>Basic analysis</strong></h3>
 <p>In the third question, after examining the relationship between price
 and ratings, we wanted to learn more about other factors that influence
 restaurant popularity. This time, instead of using only the number of
@@ -420,7 +418,9 @@ filtered_data &lt;- PAhour %&gt;%
   ungroup()
 filtered_data &lt;- filtered_data %&gt;%
   mutate(popularity_score = 0.3 * stars + 0.7 * review_count)</code></pre>
-<p><strong>Model building and Selection</strong></p>
+</div>
+<div id="model-building-and-selection" class="section level3">
+<h3><strong>Model building and Selection</strong></h3>
 <p>At the beginning, we built separate linear models for more than ten
 characters, one of which is shown in the figure below, and when we saw
 the results, we realized that it did not accurately reflect the
@@ -463,7 +463,9 @@ credit_card_popularity_model|&gt;
 <pre class="r"><code>qqnorm(residuals(credit_card_popularity_model), main = &quot;QQ Plot: Credit Card Popularity Model&quot;)
 qqline(residuals(credit_card_popularity_model), col = &quot;red&quot;)</code></pre>
 <p><img src="Model-building_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<p><strong>Reflection and improvement</strong></p>
+</div>
+<div id="reflection-and-improvement" class="section level3">
+<h3><strong>Reflection and improvement</strong></h3>
 <p>We considered the possibility that popular_score was heavily skewed
 (e.g., many values were very low and a few were very high), so we
 re-modeled using a logarithmic transformation, and this time we were
@@ -522,7 +524,9 @@ qqline(residuals(hours_popularity_model), col = &quot;red&quot;)</code></pre>
 </tr>
 </tbody>
 </table>
-<p><strong>FINAL MODEL</strong></p>
+</div>
+<div id="final-model" class="section level3">
+<h3><strong>FINAL MODEL</strong></h3>
 <p>So this is our final model. There are some many characteristic will
 influence the popularity of the restaurants. As regional differences
 play a significant role in determining popular foods and restaurant
@@ -611,13 +615,16 @@ multiple_model &lt;- lm(
 </tr>
 </tbody>
 </table>
-<p>##QQ Plot of Residuals##</p>
+</div>
+<div id="qq-plot-of-residuals" class="section level3">
+<h3><strong>QQ Plot of Residuals</strong></h3>
 <p>We can see from the qq plot that the model fit is not bad.</p>
 <pre class="r"><code>qqnorm(residuals(multiple_model), main = &quot;QQ Plot of Residuals&quot;)
 qqline(residuals(multiple_model), col = &quot;red&quot;)</code></pre>
 <p><img src="Model-building_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <pre class="r"><code>plot(multiple_model, which = 1, main = &quot;Residuals vs Fitted&quot;)</code></pre>
 <p><img src="Model-building_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+</div>
 
 
 
