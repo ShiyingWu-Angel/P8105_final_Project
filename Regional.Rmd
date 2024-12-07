@@ -16,10 +16,12 @@ library(sf)
 
 ```{r, include = FALSE}
 load("data/mergedPA.RData")
+load("data/filterPA.RData")
+county = read.csv("data/PA-city-county.csv")
 ```
 
 ---
-The number of restaurant observations varies significantly across counties in Southeastern Pennsylvania, with Philadelphia leading at 3,426 and Berks having only 22. This disparity highlights potential differences in population density, urbanization, or data representation in Yelp's dataset. Such variation could influence future analyses, especially in identifying underserved areas or trends in restaurant quality and accessibility between urban and less-populated regions.
+The number of restaurant observations varies significantly across counties in Southeastern Pennsylvania, with Philadelphia leading at **3,426** and Berks having only **22**. This disparity highlights potential differences in population density, urbanization, or data representation in Yelp's dataset. Such variation could influence future analyses, especially in identifying underserved areas or trends in restaurant quality and accessibility between urban and less-populated regions.
 
 ```{r plot number of restaurant in county, fig.width=8}
 county_counts <- mergedPA |>
@@ -47,7 +49,7 @@ plot_ly(
   )
 ```
 
-The average ratings of restaurants by county in Southeastern Pennsylvania reveal an interesting trend. Berks County, despite having the fewest restaurant observations, boasts the highest average rating. This might be attributed to the limited number of observations, as previously mentioned. In contrast, the other counties, each with hundreds of restaurants, exhibit more stable average ratings. Among these, Philadelphia stands out with the highest average score, reflecting its diverse and competitive restaurant scene.
+The average ratings of restaurants by county in Southeastern Pennsylvania reveal an interesting trend. **Berks** County, despite having the fewest restaurant observations, boasts the highest average rating. This might be attributed to the limited number of observations, as previously mentioned. In contrast, the other counties, each with hundreds of restaurants, exhibit more stable average ratings. Among these, **Philadelphia** stands out with the highest average score, reflecting its diverse and competitive restaurant scene.
 
 ```{r plot average star, fig.width=8}
 avg_stars <- mergedPA |>
@@ -72,7 +74,7 @@ plot_ly(
   )
 ```
 
-Based on Top 10 restaurant tags across counties in Southeastern Pennsylvania,  Pizza and Sandwiches dominate as the most popular restaurant types, with Philadelphia significantly contributing to their high counts. American (Traditional) and Breakfast & Brunch also feature prominently, reflecting common preferences in the region. Interestingly, while counties like Philadelphia and Montgomery contribute the most to these tags, smaller counties like Berks have minimal representation across all tags. This stacked visualization provides insight into both the diversity and distribution of restaurant types across counties.
+Based on Top 10 restaurant tags across counties in Southeastern Pennsylvania, **Pizza and Sandwiches** dominate as the most popular restaurant types, with Philadelphia significantly contributing to their high counts. **American (Traditional) and Breakfast & Brunch** also feature prominently, reflecting common preferences in the region. Interestingly, while counties like **Philadelphia and Montgomery** contribute the most to these tags, smaller counties like **Berks** have minimal representation across all tags. This stacked visualization provides insight into both the diversity and distribution of restaurant types across counties.
  
 ```{r popular histogram plot, fig.width=8}
 stacked_data <- mergedPA |>
@@ -109,3 +111,101 @@ plot_ly(
   )
 
 ```
+The price range was calculated as the difference between the minimum and maximum prices for restaurants in each county, with a standardized cap of 200 units applied due to the absence of explicit maximum price data. The results show that counties like **Philadelphia and Montgomery** have the widest price ranges, reflecting diverse dining options, while **Berks** has the smallest range, indicating less variation in pricing.
+```{r,message=FALSE, warning=FALSE,}
+library(jsonlite)
+clean_and_format_parking <- function(parking) {
+  if (is.na(parking)) return("No parking info available")
+
+  parking <- gsub("'", "\"", parking)
+  
+  parking <- gsub("u\"", "\"", parking)
+  
+  parking <- gsub("False", "false", gsub("True", "true", gsub("None", "null", parking)))
+
+  parking_list <- tryCatch(fromJSON(parking), error = function(e) {
+    message("Parsing error:", e$message)
+    return(NULL)
+  })
+
+  if (is.null(parking_list)) return("Invalid parking data")
+
+  readable <- paste0(
+    names(parking_list), ": ", ifelse(unlist(parking_list), "Yes", "No"), collapse = ", "
+  )
+  
+  return(readable)
+}
+
+clean <- function(attire) {
+  if (is.na(attire)) return(NA) # Handle NA values
+  attire <- gsub("u'", "", attire) # Remove the u' prefix
+  attire <- gsub("'", "", attire) # Remove single quotes
+  return(attire)
+}
+
+
+filterPA = filterPA |> 
+  left_join(county, by = "city")|>
+  unnest_wider(attributes)|>
+  unnest_wider(hours)|>
+  mutate(RestaurantsPriceRange2 = 
+           case_match(RestaurantsPriceRange2,
+                      "1" ~ "0-10",
+                      "2" ~ "11-30",
+                      "3" ~ "31-60",
+                      "4" ~ "61-200"))|>
+  pivot_longer(
+    cols = Monday:Sunday,
+    names_to = "day",
+    values_to = "hour"
+  )|>
+  filter(!is.na(hour))|>  
+  separate(hour, into = c("start_time", "end_time"), sep = "-")|>
+  mutate(
+    start_time = as.numeric(substr(start_time, 1, 2)) + as.numeric(substr(start_time, 4, 5)) / 60,
+    end_time = as.numeric(substr(end_time, 1, 2)) + as.numeric(substr(end_time, 4, 5)) / 60
+  )|>
+  separate(categories, into = c("categories", "other_categories"), sep = ",", extra = "drop")|>
+  mutate(WiFi = gsub(".*'(.*?)'.*", "\\1", WiFi),
+         BusinessParking = sapply(BusinessParking,clean_and_format_parking),
+         across(everything(), ~ ifelse(is.na(.), "No info", .)),
+         NoiseLevel = sapply(NoiseLevel,clean),
+         RestaurantsAttire = sapply(RestaurantsAttire,clean),
+         Alcohol = sapply(Alcohol,clean),
+         name = gsub("^[^a-zA-Z0-9]+", "", name)
+  )
+
+plot_data <- filterPA |>
+  filter(RestaurantsPriceRange2 != "No info") |>  # Exclude "No info"
+  filter(county != "No info") |>  # Exclude "No info"
+  separate(RestaurantsPriceRange2, into = c("min_price", "max_price"), sep = "-") |>
+  group_by(county) |>
+  summarize(
+    max_price = max(as.numeric(max_price), na.rm = TRUE),
+    min_price = min(as.numeric(min_price), na.rm = TRUE),
+    price_range = max_price - min_price
+  ) |>
+  arrange(desc(price_range))
+
+# Create a plotly bar chart
+plot_ly(
+  data = plot_data,
+  x = ~reorder(county, price_range),
+  y = ~price_range,
+  type = 'bar',
+  color = ~county,
+  colors = "viridis"
+) |>
+  layout(
+    title = "Price Range by County",
+    xaxis = list(
+      title = "County"
+    ),
+    yaxis = list(
+      title = "Price Range"
+    ),
+    showlegend = FALSE
+  )
+```
+
