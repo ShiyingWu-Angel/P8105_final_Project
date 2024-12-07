@@ -9,6 +9,7 @@ library(tidyverse)
 library(tigris)
 library(sf)
 library(plotly)
+library(htmlwidgets)
 ```
 
 
@@ -112,41 +113,123 @@ Heat map by zip
 
 ```{r zip}
 
+#### tooooooo big
 
-# Summarize restaurant counts by ZIP code
+# # Summarize restaurant counts by ZIP code
+# zip_restaurant_counts <- filterPA %>%
+#   group_by(postal_code, city) %>%
+#   summarize(restaurant_count = n()) %>%
+#   ungroup()
+# 
+# # Fetch ZIP code boundaries for Pennsylvania
+# pa_zipcodes <- zctas(state = "PA", class = "sf", year = 2010)
+# 
+# # Ensure ZIP codes are compatible (e.g., numeric or character)
+# zip_restaurant_counts <- zip_restaurant_counts %>%
+#   mutate(postal_code = as.character(postal_code))
+# 
+# pa_zipcodes <- pa_zipcodes %>%
+#   mutate(ZCTA5CE10 = as.character(ZCTA5CE10))
+# 
+# # Join restaurant data with ZIP code boundaries
+# pa_zipcodes_restaurants <- pa_zipcodes %>%
+#   left_join(zip_restaurant_counts, by = c("ZCTA5CE10" = "postal_code"))
+# 
+# # Fetch county boundaries for Pennsylvania
+# pa_counties <- tigris::counties(state = "PA", class = "sf") %>%
+#   filter(NAME %in% c("Montgomery", "Delaware", "Chester", "Bucks", "Berks", "Philadelphia"))
+# 
+# # Create a ggplot map
+# zipcode_heatmap <- ggplot(data = pa_zipcodes_restaurants) +
+#   geom_sf(aes(fill = restaurant_count, text = paste0(
+#     "\nCity: ", city, "\nZIP Code: ", ZCTA5CE10, "\nRestaurant Count: ", restaurant_count
+#   )), color = "gray10", linewidth = 0.1) +  # ZIP code areas and restaurant counts with hover data
+#   geom_sf(data = pa_counties, fill = NA, color = "blue", linetype = "dashed", size = 0.5) +  
+#   geom_sf_text(data = pa_counties, aes(label = NAME), size = 4, fontface = "bold", color = "#333333") +
+#   scale_fill_gradientn(
+#     colors = macaroon_palette, 
+#     na.value = "white",  
+#     name = "Restaurant Count"
+#   ) +
+#   coord_sf(
+#     xlim = c(-76, -74.7),  
+#     ylim = c(39.7, 40.6),  
+#     expand = FALSE
+#   ) +
+#   theme_minimal() +
+#   theme(panel.grid = element_blank()) + 
+#   labs(
+#     title = "Number of Restaurants by ZIP Code in Southeastern Pennsylvania",
+#     fill = "Restaurant Count"
+#   )
+# 
+# # Convert to interactive plotly
+# zipcode_heatmap_plotly <- ggplotly(zipcode_heatmap, tooltip = "text")
+
+
+# 
+# # Save the Plotly heatmap as an HTML file
+# htmlwidgets::saveWidget(zipcode_heatmap_plotly, "heatmap_plot.html", selfcontained = TRUE)
+# 
+
+
+
+
+
+```
+
+
+```{r limitded_zip}
+# Summarize restaurant counts by zip and include city
 zip_restaurant_counts <- filterPA %>%
   group_by(postal_code, city) %>%
-  summarize(restaurant_count = n()) %>%
-  ungroup()
+  summarize(restaurant_count = n(), .groups = "drop") %>%
+  mutate(postal_code = as.character(postal_code)) 
 
-# Fetch ZIP code boundaries for Pennsylvania
-pa_zipcodes <- zctas(state = "PA", class = "sf", year = 2010)
+# PA was only available in 2010 version
+pa_zipcodes <- zctas(state = "PA", class = "sf", year = 2010) %>%
+  mutate(ZCTA5CE10 = as.character(ZCTA5CE10))  
 
-# Ensure ZIP codes are compatible (e.g., numeric or character)
-zip_restaurant_counts <- zip_restaurant_counts %>%
-  mutate(postal_code = as.character(postal_code))
-
-pa_zipcodes <- pa_zipcodes %>%
-  mutate(ZCTA5CE10 = as.character(ZCTA5CE10))
-
-# Join restaurant data with ZIP code boundaries
-pa_zipcodes_restaurants <- pa_zipcodes %>%
-  left_join(zip_restaurant_counts, by = c("ZCTA5CE10" = "postal_code"))
-
-# Fetch county boundaries for Pennsylvania
-pa_counties <- tigris::counties(state = "PA", class = "sf") %>%
+# county boundaries
+pa_counties <- counties(state = "PA", class = "sf") %>%
   filter(NAME %in% c("Montgomery", "Delaware", "Chester", "Bucks", "Berks", "Philadelphia"))
 
-# Create a ggplot map
+
+filtered_zipcodes <- pa_zipcodes %>%
+  semi_join(zip_restaurant_counts, by = c("ZCTA5CE10" = "postal_code"))
+
+# Join restaurant data with the filtered zip
+pa_zipcodes_restaurants <- filtered_zipcodes %>%
+  left_join(zip_restaurant_counts, by = c("ZCTA5CE10" = "postal_code"))
+
+# Create the ggplot heatmap
 zipcode_heatmap <- ggplot(data = pa_zipcodes_restaurants) +
-  geom_sf(aes(fill = restaurant_count, text = paste0(
-    "\nCity: ", city, "\nZIP Code: ", ZCTA5CE10, "\nRestaurant Count: ", restaurant_count
-  )), color = "gray10", linewidth = 0.1) +  # ZIP code areas and restaurant counts with hover data
-  geom_sf(data = pa_counties, fill = NA, color = "blue", linetype = "dashed", size = 0.5) +  
-  geom_sf_text(data = pa_counties, aes(label = NAME), size = 4, fontface = "bold", color = "#333333") +
+  geom_sf(
+    aes(
+      fill = restaurant_count,
+      text = paste0(
+        "ZIP Code: ", ZCTA5CE10,
+        "\nCity: ", city,
+        "\nRestaurant Count: ", restaurant_count
+      )
+    ),
+    color = "grey10",  
+    , linewidth = 0.1      
+  ) +
+  geom_sf(
+    data = pa_counties,
+    fill = NA, 
+    color = "blue",    
+    linetype = "dashed", 
+    size = 0.8
+  ) +
+  geom_sf_text(data = pa_counties, aes(label = NAME), 
+               size = 4, 
+               fontface = "bold", 
+               color = "#333333") +
   scale_fill_gradientn(
-    colors = macaroon_palette, 
-    na.value = "white",  
+    colors = c("#ffe2df", "#FFADAD", "#FF6F61", "#ff5252", "#a70000"), 
+    na.value = "grey90",  
     name = "Restaurant Count"
   ) +
   coord_sf(
@@ -155,16 +238,17 @@ zipcode_heatmap <- ggplot(data = pa_zipcodes_restaurants) +
     expand = FALSE
   ) +
   theme_minimal() +
-  theme(panel.grid = element_blank()) + 
   labs(
     title = "Number of Restaurants by ZIP Code in Southeastern Pennsylvania",
     fill = "Restaurant Count"
   )
 
-# Convert to interactive plotly
-ggplotly(zipcode_heatmap, tooltip = "text")
+# Convert the ggplot to a Plotly object
+zipcode_heatmap_plotly <- ggplotly(zipcode_heatmap, tooltip = "text")
+zipcode_heatmap_plotly
 
-
+# # Save the Plotly heatmap as an HTML file
+ # htmlwidgets::saveWidget(zipcode_heatmap_plotly, "heatmap_plot.html", selfcontained = TRUE)
 
 ```
 
@@ -224,6 +308,26 @@ filterPA %>%
     fill = "Density"
   ) +
   theme_minimal()
+
+densecon <- filterPA %>%
+  ggplot(aes(x = review_count, y = stars)) +
+  stat_density_2d(
+    aes(fill = ..density..), geom = "raster", contour = FALSE
+  ) +  # Use raster for continuous density
+  geom_density_2d(color = "white") +  # Add contour lines
+  scale_fill_gradient(
+    low = "white",  # Low density color
+    high = "darkred"  # High density color
+  ) +
+  scale_x_log10() +  # Log-transform the x-axis
+  labs(
+    title = "Density Heatmap with Contours",
+    x = "Review Count",
+    y = "Stars",
+    fill = "Density"
+  ) +
+  theme_minimal()
+
 
 #discrete color scale
 filterPA %>%

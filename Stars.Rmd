@@ -39,6 +39,30 @@ scatter_plot <- plot_ly(
 scatter_plot
 ```
 
+
+```{r dense_contour}
+densecon <- mergedPA %>%
+  ggplot(aes(x = review_count, y = stars)) +
+  stat_density_2d(
+    aes(fill = ..density..), geom = "raster", contour = FALSE
+  ) +  
+  geom_density_2d(color = "white") + 
+  scale_fill_gradient(
+    low = "white",  
+    high = "darkred"  
+  ) +
+  scale_x_log10() +  # Log-transform the x-axis
+  labs(
+    title = "Density Heatmap of Log-tranformed Number of Comments by Ratings with Contours",
+    x = "Review Count",
+    y = "Stars",
+    fill = "Density"
+  ) +
+  theme_minimal()
+
+densecon
+
+```
 **How does review correlate with stars?**
 
 For the first question, we want to explore the relationship between the number of reviews and ratings. We assumed that it was linearly positively correlated, so we built a linear model. But the facts told us otherwise, and we tried to investigate the possibilities, and in our analysis we found that the number of reviews and ratings are extreme, for example, a restaurant with only 1 review tends to have a very high or very low score.

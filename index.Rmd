@@ -13,6 +13,8 @@ library(ggplot2)
 library(plotly)
 library(tigris)
 library(sf) 
+
+options(tigris_progress = FALSE)
 ```
 
 ```{r, include = FALSE}
@@ -31,6 +33,81 @@ It is hard for anyone to find a good restaurant, no matter if they stay in the s
 
 ## Restaurants Distribution
 Upon data analysis, we condensed the restaurants information across different locations and categories in the Pennsylvania from the **Yelp data** ([data source](Report.html)), analyzing the distribution of restaurants in the Pennsylvania.
+
+```{r heatmap_data, include=FALSE}
+county <- read_csv("data/PA-city-county.csv", show_col_types = FALSE)
+
+# Summarize restaurant counts by zip and include city
+zip_restaurant_counts <- mergedPA %>%
+  group_by(postal_code, city) %>%
+  summarize(restaurant_count = n(), .groups = "drop") %>%
+  mutate(postal_code = as.character(postal_code)) 
+
+# PA was only available in 2010 version
+pa_zipcodes <- suppressMessages({zctas(state = "PA", class = "sf", year = 2010)}) %>%
+  mutate(ZCTA5CE10 = as.character(ZCTA5CE10))  
+
+# county boundaries
+pa_counties <- counties(state = "PA", class = "sf") %>%
+  filter(NAME %in% c("Montgomery", "Delaware", "Chester", "Bucks", "Berks", "Philadelphia"))
+
+
+filtered_zipcodes <- pa_zipcodes %>%
+  semi_join(zip_restaurant_counts, by = c("ZCTA5CE10" = "postal_code"))
+
+# Join restaurant data with the filtered zip
+pa_zipcodes_restaurants <- filtered_zipcodes %>%
+  left_join(zip_restaurant_counts, by = c("ZCTA5CE10" = "postal_code"))
+
+
+```
+
+```{r limitded_zip, fig.width = 10, fig.asp = 0.8, warning=FALSE, echo=FALSE, message=FALSE}
+zipcode_heatmap <- ggplot(data = pa_zipcodes_restaurants) +
+  geom_sf(
+    aes(
+      fill = restaurant_count,
+      text = paste0(
+        "ZIP Code: ", ZCTA5CE10,
+        "\nCity: ", city,
+        "\nRestaurant Count: ", restaurant_count
+      )
+    ),
+    color = "grey10",  
+    , linewidth = 0.1      
+  ) +
+  geom_sf(
+    data = pa_counties,
+    fill = NA, 
+    color = "blue",    
+    linetype = "dashed", 
+    size = 0.8
+  ) +
+  geom_sf_text(data = pa_counties, aes(label = NAME), 
+               size = 4, 
+               fontface = "bold", 
+               color = "#333333") +
+  scale_fill_gradientn(
+    colors = c("#ffe2df", "#FFADAD", "#FF6F61", "#ff5252", "#a70000"), 
+    na.value = "grey90",  
+    name = "Restaurant Count"
+  ) +
+  coord_sf(
+    xlim = c(-76, -74.7),  
+    ylim = c(39.7, 40.6),  
+    expand = FALSE
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Number of Restaurants by ZIP Code in Southeastern Pennsylvania",
+    fill = "Restaurant Count"
+  )
+
+# Convert the ggplot to a Plotly object
+zipcode_heatmap_plotly <- ggplotly(zipcode_heatmap, tooltip = "text")
+zipcode_heatmap_plotly
+
+```
 
 Read [Regional Analyzation](Regional.html) here.
 
