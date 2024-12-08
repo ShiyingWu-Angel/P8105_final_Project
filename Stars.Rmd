@@ -24,6 +24,8 @@ library(broom)
 load("data/mergedPA.RData")
 ```
 
+This scatter plot reveals the relationship between review count and star ratings across Southeastern Pennsylvania counties. The distribution is left-skewed, with a higher concentration of observations around a 4-star rating. Philadelphia dominates with higher review counts, but the data shows no clear correlation between the number of reviews and star ratings. Restaurants with fewer reviews often exhibit more extreme ratings.
+
 ```{r scatter plot}
 scatter_plot <- plot_ly(
   data = mergedPA,
@@ -38,7 +40,6 @@ scatter_plot <- plot_ly(
 
 scatter_plot
 ```
-
 
 ```{r dense_contour}
 densecon <- mergedPA %>%
@@ -94,7 +95,7 @@ ggplot(data, aes(x = stars, y = review_count)) +
 
 **How does review correlate with stars?（review count>1000)**
 
-So we filtered again, counting the star ratings of restaurants with 1000+ reviews and exploring the connection. From the results, it is clear that there is no relationship between the number of reviews and the star, and that more reviews do not necessarily mean higher stars, which is consistent with real-life situations. The scatterplot does not show a clear linear trend, suggesting that other factors may have a greater impact on the number of reviews than the star rating itself. Ratings may be influenced more by popularity, location, or marketing efforts than perceived quality through the number of reviews. The p-value = 0.22765 > 0.05 also shows that the reviewer numbers and stars are not correlated.
+So we filtered again, counting the star ratings of restaurants with 1000+ reviews and exploring the connection. From the results, it is clear that there is no relationship between the number of reviews and the star, and that more reviews do not necessarily mean higher stars, which is consistent with real-life situations. The scatterplot does not show a clear linear trend, suggesting that other factors may have a greater impact on the number of reviews than the star rating itself. Ratings may be influenced more by popularity, location, or marketing efforts than perceived quality through the number of reviews. The **p-value = 0.22765 > 0.05** also shows that the reviewer numbers and stars are not correlated.
 
 ```{r}
 filtered_high_reviews <- data %>% filter(review_count > 1000)
@@ -134,18 +135,14 @@ price_star_summary %>%
   )
 ```
 
-```{r}
 
-# Plot the linear model for Price Range and Star Rating with filtered data
+```{r}
 ggplot(filtered_price_data, aes(x = attributes$RestaurantsPriceRange2, y = stars)) +
   geom_point(alpha = 0.4, color = "purple") +
   geom_smooth(method = "lm", col = "red") +
   labs(title = "Linear Model: Price Range vs Star Rating (Filtered NA)",
        x = "Price Range",
        y = "Star Rating")
-
-#Does the price range have higher quality with a higher star?
-# Analysis of price range and star ratings
 ```
 
 

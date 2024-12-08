@@ -74,45 +74,8 @@ plot_ly(
   )
 ```
 
-Based on Top 10 restaurant tags across counties in Southeastern Pennsylvania, **Pizza and Sandwiches** dominate as the most popular restaurant types, with Philadelphia significantly contributing to their high counts. **American (Traditional) and Breakfast & Brunch** also feature prominently, reflecting common preferences in the region. Interestingly, while counties like **Philadelphia and Montgomery** contribute the most to these tags, smaller counties like **Berks** have minimal representation across all tags. This stacked visualization provides insight into both the diversity and distribution of restaurant types across counties.
- 
-```{r popular histogram plot, fig.width=8}
-stacked_data <- mergedPA |>
-  separate_rows(categories, sep = ",\\s*") |> 
-  group_by(categories, county) |>
-  summarise(count = n(), .groups = "drop") |>  
-  ungroup()
-
-top_tags <- stacked_data |>
-  group_by(categories) |>
-  summarise(total_count = sum(count), .groups = "drop") |>
-  arrange(desc(total_count)) |>
-  slice_max(total_count, n = 10) |>
-  pull(categories) 
-
-stacked_data <- stacked_data |>
-  filter(categories %in% top_tags) |>
-  mutate(categories = factor(categories, levels = top_tags))
-  
-
-plot_ly(
-  data = stacked_data,
-  x = ~categories,       
-  y = ~count,         
-  color = ~county,   
-  type = "bar",       
-  colors = "viridis"
-) |> 
-  layout(
-    title = "Top 10 Restaurant Tags by County",
-    xaxis = list(title = "Restaurant Tag", tickangle = 45), 
-    yaxis = list(title = "Count"),
-    barmode = "stack"
-  )
-
-```
 The price range was calculated as the difference between the minimum and maximum prices for restaurants in each county, with a standardized cap of 200 units applied due to the absence of explicit maximum price data. The results show that counties like **Philadelphia and Montgomery** have the widest price ranges, reflecting diverse dining options, while **Berks** has the smallest range, indicating less variation in pricing.
-```{r,message=FALSE, warning=FALSE,}
+```{r,message=FALSE, warning=FALSE, fig.width=8 }
 library(jsonlite)
 clean_and_format_parking <- function(parking) {
   if (is.na(parking)) return("No parking info available")
@@ -209,3 +172,42 @@ plot_ly(
   )
 ```
 
+
+
+Based on Top 10 restaurant tags across counties in Southeastern Pennsylvania, **Pizza and Sandwiches** dominate as the most popular restaurant types, with Philadelphia significantly contributing to their high counts. **American (Traditional) and Breakfast & Brunch** also feature prominently, reflecting common preferences in the region. Interestingly, while counties like **Philadelphia and Montgomery** contribute the most to these tags, smaller counties like **Berks** have minimal representation across all tags. This stacked visualization provides insight into both the diversity and distribution of restaurant types across counties.
+ 
+```{r popular histogram plot, fig.width=8}
+stacked_data <- mergedPA |>
+  separate_rows(categories, sep = ",\\s*") |> 
+  group_by(categories, county) |>
+  summarise(count = n(), .groups = "drop") |>  
+  ungroup()
+
+top_tags <- stacked_data |>
+  group_by(categories) |>
+  summarise(total_count = sum(count), .groups = "drop") |>
+  arrange(desc(total_count)) |>
+  slice_max(total_count, n = 10) |>
+  pull(categories) 
+
+stacked_data <- stacked_data |>
+  filter(categories %in% top_tags) |>
+  mutate(categories = factor(categories, levels = top_tags))
+  
+
+plot_ly(
+  data = stacked_data,
+  x = ~categories,       
+  y = ~count,         
+  color = ~county,   
+  type = "bar",       
+  colors = "viridis"
+) |> 
+  layout(
+    title = "Top 10 Restaurant Tags by County",
+    xaxis = list(title = "Restaurant Tag", tickangle = 45), 
+    yaxis = list(title = "Count"),
+    barmode = "stack"
+  )
+
+```
