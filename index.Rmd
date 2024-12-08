@@ -5,6 +5,7 @@ output:
     code_folding: hide
     toc: true
     toc_float: true
+    font_size: 10pt
 ---
 
 ```{r setup, include = FALSE}
@@ -29,11 +30,15 @@ pa_counties <- counties(state = "PA", class = "sf") |>
 ![](picture/yelp-top-100-us-restaurants.jpeg)
 Photo from:  [Yelp](https://www.yelp.com/article/top-100-us-restaurants-2024/) 
 
-It is hard for anyone to find a good restaurant, no matter if they stay in the same place for a long time or just move in like us. When people do not know where to eat, rating apps such as yelp would be a key resource for people to use. However, it led to an interesting question to us: what factors could correlate with rates or stars. 
+It is hard for anyone to find a good restaurant, no matter if they stay in the same place for a long time or just move in like us. When people do not know where to eat, rating apps such as yelp would be a key resource for people to use. However, it led to an interesting question to us: what factors could correlate with rates or stars.  
 
-## Restaurants Distribution
-Upon data analysis, we condensed the restaurants information across different locations and categories in the Pennsylvania from the **Yelp data** ([data source](Report.html)), analyzing the distribution of restaurants in the Pennsylvania.
+To answer the questions, we studied open data of Restaurants in Southeastern Pennsylvania from **Yelp open dataset** ([data source](Report.html)).  
+<span style="font-size: 18pt; color: red;">7,801 Restaurants</span>
+<span style="font-size: 15pt; color: orange;">227 cities</span>
+<span style="font-size: 13pt; color: lightblue;">6 counties</span>
 
+## Where are the Restaurants  
+Upon data analysis, we condensed the restaurants information across different locations and categories in the Southeastern Pennsylvania, analyzing the distribution of restaurants in the Pennsylvania.  
 ```{r heatmap_data, include=FALSE}
 county <- read_csv("data/PA-city-county.csv", show_col_types = FALSE)
 
@@ -109,6 +114,44 @@ zipcode_heatmap_plotly
 
 ```
 
+
+
+## Restaurant Around Southeastern PA
+The map shows that most restaurants in Southeastern Pennsylvania are clustered around Philadelphia, reflecting its status as a densely populated urban center. The majority of ratings are green, indicating an average star rating around 4. Suburban counties like Montgomery and Bucks also have notable restaurant density, but their distribution is more spread out compared to the concentrated clusters in Philadelphia.  
+
+```{r, fig.width = 10, fig.asp = 0.8, warning=FALSE}
+ggplot() +
+  geom_sf(data = pa_counties, color = "black", fill = "lightgrey", size = 0.8) + 
+  geom_point(
+    data = mergedPA,
+    aes(x = longitude, y = latitude, color = stars),
+    size = 0.5, alpha = 0.5
+  ) +  
+  geom_sf_text(
+    data = pa_counties,
+    aes(label = NAME),
+    size = 3, color = "black", fontface = "bold"
+  ) +  
+  coord_sf(xlim = c(-76, -74.5), ylim = c(39.7, 40.5), expand = FALSE) + 
+  theme_void(base_size = 15) +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(hjust = 0.5, size = 16)
+  ) +
+  guides(color = guide_colorbar(
+    title.position = "top",
+    barwidth = 15,
+    barheight = 0.5
+  )) +
+  scale_color_viridis_c(option = "D", name = "Stars") + 
+  labs(
+    title = "Restaurant Ratings in Southeastern Pennsylvania (By County)",
+    color = "Stars"
+  )
+```
+
+
+
 Read [Regional Analyzation](Regional.html) here.
 
 ## Rating-Associated Factors
@@ -144,41 +187,6 @@ Click on the video below to learn more about the features of this site and enjoy
 </iframe>
 
 ---
-
-## Restaurant Around Southeastern PA
-The map shows that most restaurants in Southeastern Pennsylvania are clustered around Philadelphia, reflecting its status as a densely populated urban center. The majority of ratings are green, indicating an average star rating around 4. Suburban counties like Montgomery and Bucks also have notable restaurant density, but their distribution is more spread out compared to the concentrated clusters in Philadelphia.
-
-```{r, fig.width = 10, fig.asp = 0.8, warning=FALSE}
-ggplot() +
-  geom_sf(data = pa_counties, color = "black", fill = "lightgrey", size = 0.8) + 
-  geom_point(
-    data = mergedPA,
-    aes(x = longitude, y = latitude, color = stars),
-    size = 0.5, alpha = 0.5
-  ) +  
-  geom_sf_text(
-    data = pa_counties,
-    aes(label = NAME),
-    size = 3, color = "black", fontface = "bold"
-  ) +  
-  coord_sf(xlim = c(-76, -74.5), ylim = c(39.7, 40.5), expand = FALSE) + 
-  theme_void(base_size = 15) +
-  theme(
-    legend.position = "bottom",
-    plot.title = element_text(hjust = 0.5, size = 16)
-  ) +
-  guides(color = guide_colorbar(
-    title.position = "top",
-    barwidth = 15,
-    barheight = 0.5
-  )) +
-  scale_color_viridis_c(option = "D", name = "Stars") + 
-  labs(
-    title = "Restaurant Ratings in Southeastern Pennsylvania (By County)",
-    color = "Stars"
-  )
-```
-
 
 ### Looking for some fantastic food?
 ### Looking for fancy places to eat for date?
